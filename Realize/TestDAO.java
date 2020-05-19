@@ -199,6 +199,11 @@ public class TestDAO {
 
         //endregion
 
+        /*String IdS="11";
+        String passwordS="123";
+        String sql="SELECT * FROM shop WHERE shopId='"+IdS+"'" +" AND shopPassword='"+passwordS+"'";
+        System.out.println(sql);*/
+
     }
 
 }
