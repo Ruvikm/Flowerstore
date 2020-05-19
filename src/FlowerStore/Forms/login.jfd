@@ -1,0 +1,110 @@
+JFDML JFormDesigner: "7.0.1.0.272" Java: "11.0.6" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) {
+			"autoSize": false
+		} ) {
+			name: "login_form"
+			"minimumSize": new java.awt.Dimension( 360, 430 )
+			"$locationPolicy": 1
+			"$sizePolicy": 1
+			"title": "登录"
+			"maximizedBounds": new java.awt.Rectangle( 100, 100, 360, 430 )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "Login_user"
+				"text": "用户名"
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 4, false )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 90
+				"y": 155
+				"width": 50
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "Login_password"
+				"text": "密码"
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 4, false )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 90
+				"y": 280
+				"width": 40
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "username_test"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 90
+				"y": 190
+				"width": 220
+				"height": 28
+			} )
+			add( new FormComponent( "javax.swing.JPasswordField" ) {
+				name: "password_test"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 90
+				"y": 320
+				"width": 220
+				"height": 28
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "Login_button"
+				"text": "登录"
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 2, false )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "Login_buttonActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 140
+				"y": 440
+				"width": 120
+			} )
+			add( new FormComponent( "javax.swing.JRadioButton" ) {
+				name: "user_check"
+				"text": "用户"
+				"$buttonGroup": new FormReference( "buttonGroup1" )
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 4, false )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "user_checkActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 225
+				"y": 390
+			} )
+			add( new FormComponent( "javax.swing.JRadioButton" ) {
+				name: "manager_check"
+				"text": "管理员"
+				"$buttonGroup": new FormReference( "buttonGroup1" )
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 4, false )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "manager_checkActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 280
+				"y": 390
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "registered"
+				"text": "注册账户"
+				"cursor": new java.awt.Cursor( 12 )
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 4, false )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "registeredMouseClicked", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 30
+				"y": 470
+				"width": 65
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "Login_title"
+				"text": "WELCOME"
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 6, false )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 153
+				"y": 50
+				"width": 94
+				"height": 30
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 15, 0 )
+			"size": new java.awt.Dimension( 400, 560 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup1"
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 446 )
+		} )
+	}
+}
