@@ -29,6 +29,10 @@ public class login {
     private JRadioButton manager_check;
     private JLabel registered;
     private JLabel Login_title;
+    public login() {
+        initComponents();
+    }
+
     // JFormDesigner - End of variables declaration  //GEN-END:variables
     public static void main(String[] args) {
         try {
@@ -52,7 +56,7 @@ public class login {
         String password="";
         name = username_test.getText();
         password = String.valueOf( password_test.getPassword() );
-        System.out.println(name+"  "+password);
+        //System.out.println(name+"  "+password);
         IFlowerStoreService iFlowerStoreService = FactoryService.factoryService.getFlowerStoreService();
         ICustomerService iCustomerService = FactoryService.factoryService.getiCustomerService();
         if (!name.equals("") && !password.equals("")) {
