@@ -93,7 +93,7 @@ public class login {
 
     private void registeredMouseClicked(MouseEvent e) {
         // TODO add your code here
-
+        new regist().setVisible(true);
     }
 
     private void initComponents() {
