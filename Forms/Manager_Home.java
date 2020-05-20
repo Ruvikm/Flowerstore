@@ -13,7 +13,6 @@ import javax.swing.*;
 public class Manager_Home extends JFrame {
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JTabbedPane tabbedPane1;
-    private JPanel panel1;
     private JPanel panel2;
     private JPanel panel3;
     private JLabel label1;
@@ -23,10 +22,10 @@ public class Manager_Home extends JFrame {
     private JTextField textField2;
     private JTextField textField3;
     private JButton button1;
-    public Manager_Home() {
+    private JPanel panel1;
+    public Manager_Home(){
         initComponents();
     }
-
     // JFormDesigner - End of variables declaration  //GEN-END:variables
     public static void main(String[] args) {
         new Manager_Home().setVisible(true);
@@ -35,7 +34,6 @@ public class Manager_Home extends JFrame {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         tabbedPane1 = new JTabbedPane();
-        panel1 = new JPanel();
         panel2 = new JPanel();
         panel3 = new JPanel();
         label1 = new JLabel();
@@ -45,6 +43,7 @@ public class Manager_Home extends JFrame {
         textField2 = new JTextField();
         textField3 = new JTextField();
         button1 = new JButton();
+        panel1 = new JPanel();
 
         //======== this ========
         Container contentPane = getContentPane();
@@ -53,27 +52,6 @@ public class Manager_Home extends JFrame {
         //======== tabbedPane1 ========
         {
             tabbedPane1.setTabPlacement(SwingConstants.LEFT);
-
-            //======== panel1 ========
-            {
-                panel1.setLayout(null);
-
-                {
-                    // compute preferred size
-                    Dimension preferredSize = new Dimension();
-                    for(int i = 0; i < panel1.getComponentCount(); i++) {
-                        Rectangle bounds = panel1.getComponent(i).getBounds();
-                        preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
-                        preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
-                    }
-                    Insets insets = panel1.getInsets();
-                    preferredSize.width += insets.right;
-                    preferredSize.height += insets.bottom;
-                    panel1.setMinimumSize(preferredSize);
-                    panel1.setPreferredSize(preferredSize);
-                }
-            }
-            tabbedPane1.addTab("\u7ba1\u7406\u9c9c\u82b1", panel1);
 
             //======== panel2 ========
             {
@@ -142,9 +120,30 @@ public class Manager_Home extends JFrame {
                 }
             }
             tabbedPane1.addTab("\u5e97\u94fa\u4fe1\u606f", panel3);
+
+            //======== panel1 ========
+            {
+                panel1.setLayout(null);
+
+                {
+                    // compute preferred size
+                    Dimension preferredSize = new Dimension();
+                    for(int i = 0; i < panel1.getComponentCount(); i++) {
+                        Rectangle bounds = panel1.getComponent(i).getBounds();
+                        preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+                        preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
+                    }
+                    Insets insets = panel1.getInsets();
+                    preferredSize.width += insets.right;
+                    preferredSize.height += insets.bottom;
+                    panel1.setMinimumSize(preferredSize);
+                    panel1.setPreferredSize(preferredSize);
+                }
+            }
+            tabbedPane1.addTab("\u7ba1\u7406\u9c9c\u82b1", panel1);
         }
         contentPane.add(tabbedPane1);
-        tabbedPane1.setBounds(0, 0, 540, 470);
+        tabbedPane1.setBounds(0, 0, 865, 565);
 
         {
             // compute preferred size
@@ -160,7 +159,7 @@ public class Manager_Home extends JFrame {
             contentPane.setMinimumSize(preferredSize);
             contentPane.setPreferredSize(preferredSize);
         }
-        setSize(550, 510);
+        setSize(880, 610);
         setLocationRelativeTo(null);
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }

@@ -6,7 +6,7 @@ new FormModel {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) {
 			"autoSize": false
 		} ) {
-			name: "login_form"
+			name: "this"
 			"minimumSize": new java.awt.Dimension( 360, 430 )
 			"$locationPolicy": 1
 			"$sizePolicy": 1
@@ -19,7 +19,7 @@ new FormModel {
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 90
 				"y": 155
-				"width": 50
+				"width": 65
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "Login_password"
@@ -28,7 +28,7 @@ new FormModel {
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 90
 				"y": 280
-				"width": 40
+				"width": 60
 			} )
 			add( new FormComponent( "javax.swing.JTextField" ) {
 				name: "username_test"

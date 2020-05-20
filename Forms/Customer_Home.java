@@ -4,13 +4,19 @@
 
 package FlowerStore.Forms;
 
+import FlowerStore.Factory.FactoryDAO;
+
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.UIManager;
 
 /**
  * @author Ruvik
  */
 public class Customer_Home extends JFrame {
+
+
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JTabbedPane tabbedPane1;
     private JPanel Check;
@@ -33,27 +39,30 @@ public class Customer_Home extends JFrame {
     private JPanel Orders;
     private JPanel Me;
     private JLabel Title;
-    private JLabel label2;
-    private JLabel label3;
-    private JLabel label4;
-    private JLabel label5;
+    private JLabel username;
+    private JLabel sex;
+    private JLabel phone;
+    private JLabel sign;
     private JTextField usertext;
     private JTextField sextext;
     private JTextField phonetext;
     private JTextField signtext;
-    private JLabel label6;
-    private JLabel label7;
-    private JLabel label8;
+    private JLabel PasswordTitle;
+    private JLabel originalP;
+    private JLabel newP;
     private JTextField original_password;
     private JTextField new_password;
-    private JButton button1;
-    public Customer_Home() {
+    private JButton Save;
+    private JLabel UserId_Title;
+    private JLabel UserID;
+    public Customer_Home(){
         initComponents();
     }
-
     // JFormDesigner - End of variables declaration  //GEN-END:variables
-    public static void main(String[] args) {
-        new Customer_Home().setVisible(true);
+    private void thisWindowOpened(WindowEvent e) {
+        // TODO add your code here
+        String name=login.name;
+        UserID.setText(FactoryDAO.getICustomer().getCustomer(name).getCustomer_id()+" ");
     }
 
     private void initComponents() {
@@ -79,29 +88,38 @@ public class Customer_Home extends JFrame {
         Orders = new JPanel();
         Me = new JPanel();
         Title = new JLabel();
-        label2 = new JLabel();
-        label3 = new JLabel();
-        label4 = new JLabel();
-        label5 = new JLabel();
+        username = new JLabel();
+        sex = new JLabel();
+        phone = new JLabel();
+        sign = new JLabel();
         usertext = new JTextField();
         sextext = new JTextField();
         phonetext = new JTextField();
         signtext = new JTextField();
-        label6 = new JLabel();
-        label7 = new JLabel();
-        label8 = new JLabel();
+        PasswordTitle = new JLabel();
+        originalP = new JLabel();
+        newP = new JLabel();
         original_password = new JTextField();
         new_password = new JTextField();
-        button1 = new JButton();
+        Save = new JButton();
+        UserId_Title = new JLabel();
+        UserID = new JLabel();
 
         //======== this ========
-        setIconImage(new ImageIcon("E:\\college\\code\\Java\\src\\\u5b9e\u9a8c\u4e09\u9c9c\u82b1\u9500\u552e\u7cfb\u7edf\\img\\\u5934\u50cf.PNG").getImage());
+        setIconImage(null);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                thisWindowOpened(e);
+            }
+        });
         Container contentPane = getContentPane();
         contentPane.setLayout(null);
 
         //======== tabbedPane1 ========
         {
             tabbedPane1.setTabPlacement(SwingConstants.LEFT);
+            tabbedPane1.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
             //======== Check ========
             {
@@ -129,7 +147,7 @@ public class Customer_Home extends JFrame {
                 Buy.setLayout(null);
 
                 //---- label1 ----
-                label1.setIcon(new ImageIcon(getClass().getResource("/\u5b9e\u9a8c\u4e09\u9c9c\u82b1\u9500\u552e\u7cfb\u7edf/img/flowers/\u90c1\u91d1\u9999.png")));
+                label1.setIcon(new ImageIcon(getClass().getResource("/FlowerStore/img/flowers/\u90c1\u91d1\u9999.png")));
                 Buy.add(label1);
                 label1.setBounds(20, 5, 220, 220);
 
@@ -257,70 +275,92 @@ public class Customer_Home extends JFrame {
 
             //======== Me ========
             {
+                Me.setFont(Me.getFont().deriveFont(Me.getFont().getSize() + 6f));
                 Me.setLayout(null);
 
                 //---- Title ----
                 Title.setText("\u6211\u7684\u8d44\u6599");
+                Title.setFont(Title.getFont().deriveFont(Title.getFont().getSize() + 8f));
                 Me.add(Title);
-                Title.setBounds(new Rectangle(new Point(30, 20), Title.getPreferredSize()));
+                Title.setBounds(new Rectangle(new Point(70, 30), Title.getPreferredSize()));
 
-                //---- label2 ----
-                label2.setText("\u7528\u6237\u540d");
-                label2.setLabelFor(usertext);
-                Me.add(label2);
-                label2.setBounds(new Rectangle(new Point(60, 60), label2.getPreferredSize()));
+                //---- username ----
+                username.setText("\u7528\u6237\u540d");
+                username.setLabelFor(usertext);
+                username.setFont(username.getFont().deriveFont(username.getFont().getSize() + 6f));
+                Me.add(username);
+                username.setBounds(new Rectangle(new Point(160, 85), username.getPreferredSize()));
 
-                //---- label3 ----
-                label3.setText("\u6027\u522b");
-                label3.setLabelFor(sextext);
-                Me.add(label3);
-                label3.setBounds(new Rectangle(new Point(60, 100), label3.getPreferredSize()));
+                //---- sex ----
+                sex.setText("\u6027\u522b");
+                sex.setLabelFor(sextext);
+                sex.setFont(sex.getFont().deriveFont(sex.getFont().getSize() + 6f));
+                Me.add(sex);
+                sex.setBounds(new Rectangle(new Point(160, 125), sex.getPreferredSize()));
 
-                //---- label4 ----
-                label4.setText("\u624b\u673a");
-                label4.setLabelFor(phonetext);
-                Me.add(label4);
-                label4.setBounds(new Rectangle(new Point(60, 140), label4.getPreferredSize()));
+                //---- phone ----
+                phone.setText("\u624b\u673a");
+                phone.setLabelFor(phonetext);
+                phone.setFont(phone.getFont().deriveFont(phone.getFont().getSize() + 6f));
+                Me.add(phone);
+                phone.setBounds(new Rectangle(new Point(160, 165), phone.getPreferredSize()));
 
-                //---- label5 ----
-                label5.setText("\u7b7e\u540d");
-                label5.setLabelFor(signtext);
-                Me.add(label5);
-                label5.setBounds(new Rectangle(new Point(60, 180), label5.getPreferredSize()));
+                //---- sign ----
+                sign.setText("\u7b7e\u540d");
+                sign.setLabelFor(signtext);
+                sign.setFont(sign.getFont().deriveFont(sign.getFont().getSize() + 6f));
+                Me.add(sign);
+                sign.setBounds(new Rectangle(new Point(160, 205), sign.getPreferredSize()));
                 Me.add(usertext);
-                usertext.setBounds(120, 55, 230, 30);
+                usertext.setBounds(230, 80, 230, 30);
                 Me.add(sextext);
-                sextext.setBounds(120, 95, 230, 30);
+                sextext.setBounds(230, 120, 230, 30);
                 Me.add(phonetext);
-                phonetext.setBounds(120, 135, 230, 30);
+                phonetext.setBounds(230, 160, 230, 30);
                 Me.add(signtext);
-                signtext.setBounds(120, 175, 230, 65);
+                signtext.setBounds(230, 200, 230, 65);
 
-                //---- label6 ----
-                label6.setText("\u4fee\u6539\u5bc6\u7801");
-                Me.add(label6);
-                label6.setBounds(new Rectangle(new Point(30, 280), label6.getPreferredSize()));
+                //---- PasswordTitle ----
+                PasswordTitle.setText("\u4fee\u6539\u5bc6\u7801");
+                PasswordTitle.setFont(PasswordTitle.getFont().deriveFont(PasswordTitle.getFont().getSize() + 8f));
+                Me.add(PasswordTitle);
+                PasswordTitle.setBounds(new Rectangle(new Point(70, 290), PasswordTitle.getPreferredSize()));
 
-                //---- label7 ----
-                label7.setText("\u539f\u5bc6\u7801");
-                label7.setLabelFor(original_password);
-                Me.add(label7);
-                label7.setBounds(new Rectangle(new Point(60, 325), label7.getPreferredSize()));
+                //---- originalP ----
+                originalP.setText("\u539f\u5bc6\u7801");
+                originalP.setLabelFor(original_password);
+                originalP.setFont(originalP.getFont().deriveFont(originalP.getFont().getSize() + 6f));
+                Me.add(originalP);
+                originalP.setBounds(new Rectangle(new Point(160, 335), originalP.getPreferredSize()));
 
-                //---- label8 ----
-                label8.setText("\u65b0\u5bc6\u7801");
-                label8.setLabelFor(new_password);
-                Me.add(label8);
-                label8.setBounds(new Rectangle(new Point(60, 365), label8.getPreferredSize()));
+                //---- newP ----
+                newP.setText("\u65b0\u5bc6\u7801");
+                newP.setLabelFor(new_password);
+                newP.setFont(newP.getFont().deriveFont(newP.getFont().getSize() + 6f));
+                Me.add(newP);
+                newP.setBounds(new Rectangle(new Point(160, 375), newP.getPreferredSize()));
                 Me.add(original_password);
-                original_password.setBounds(120, 320, 230, 30);
+                original_password.setBounds(230, 330, 230, 30);
                 Me.add(new_password);
-                new_password.setBounds(120, 360, 230, 30);
+                new_password.setBounds(230, 370, 230, 30);
 
-                //---- button1 ----
-                button1.setText("\u4fdd\u5b58");
-                Me.add(button1);
-                button1.setBounds(180, 420, 110, button1.getPreferredSize().height);
+                //---- Save ----
+                Save.setText("\u4fdd\u5b58");
+                Save.setFont(Save.getFont().deriveFont(Save.getFont().getSize() + 6f));
+                Me.add(Save);
+                Save.setBounds(280, 430, 110, Save.getPreferredSize().height);
+
+                //---- UserId_Title ----
+                UserId_Title.setText("UserID :");
+                UserId_Title.setFont(UserId_Title.getFont().deriveFont(UserId_Title.getFont().getSize() + 1f));
+                Me.add(UserId_Title);
+                UserId_Title.setBounds(530, 25, 48, 20);
+
+                //---- UserID ----
+                UserID.setText("           ");
+                UserID.setFont(UserID.getFont().deriveFont(UserID.getFont().getSize() + 1f));
+                Me.add(UserID);
+                UserID.setBounds(590, 25, 50, 20);
 
                 {
                     // compute preferred size
@@ -340,10 +380,10 @@ public class Customer_Home extends JFrame {
             tabbedPane1.addTab("\u5173\u4e8e\u6211", Me);
         }
         contentPane.add(tabbedPane1);
-        tabbedPane1.setBounds(0, 5, 540, 465);
+        tabbedPane1.setBounds(0, 5, 750, 495);
 
-        contentPane.setPreferredSize(new Dimension(550, 510));
-        setSize(550, 510);
+        contentPane.setPreferredSize(new Dimension(760, 540));
+        setSize(760, 540);
         setLocationRelativeTo(null);
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
