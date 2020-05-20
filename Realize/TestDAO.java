@@ -1,6 +1,12 @@
 package FlowerStore.Realize;
 
 
+import FlowerStore.Entity.User;
+import FlowerStore.Realize.DAO.IUser;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestDAO {
 
     public static void main(String[] args) {
@@ -182,7 +188,7 @@ public class TestDAO {
         //region User测试
 
         //测试 AddUser
-        /*List<User> list = new ArrayList<User>();
+       /* List<User> list = new ArrayList<User>();
         User user=new User();
         user.setUser_id(11);
         user.setName("Ruvik");

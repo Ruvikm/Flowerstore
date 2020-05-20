@@ -37,18 +37,16 @@ public class IUser implements UserDAO {
     }
 
     @Override
-    public boolean AddUser(List<User> list) {
+    public boolean AddUser(User s) {
         Connection conn = DBUtil.getConnection();
         String sql = "insert into user values(?,?,?)";
         PreparedStatement ps = null;
         try {
             ps = conn.prepareStatement(sql);
-            for(User s : list){
                 ps.setInt(1, s.getUser_id());
                 ps.setString(2, s.getName());
                 ps.setString(3,s.getPassword());
                 ps.executeUpdate();
-            }
             return true;
         } catch (SQLException e) {
             // TODO Auto-generated catch block

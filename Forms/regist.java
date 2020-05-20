@@ -4,7 +4,16 @@
 
 package FlowerStore.Forms;
 
+import FlowerStore.Entity.Customer;
+import FlowerStore.Entity.User;
+import FlowerStore.Factory.FactoryDAO;
+import FlowerStore.Factory.FactoryService;
+import FlowerStore.Realize.DAO.IUser;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
 /**
@@ -18,15 +27,42 @@ public class regist extends JFrame {
     private JLabel password2;
     private JButton regist_button;
     private JTextField username_text;
-    private JTextField password1_text;
-    private JTextField password2_text;
-    public regist() {
+    private JPasswordField passwordField1;
+    private JPasswordField passwordField2;
+    public regist(){
         initComponents();
     }
-
     // JFormDesigner - End of variables declaration  //GEN-END:variables
-    public static void main(String[] args) {
-        new regist().setVisible(true);
+
+    private void regist_buttonActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        String name = "";
+        String password1 = "";
+        String password2 = "";
+        name = username_text.getText();
+        User user = new User();
+        Customer customer = new Customer();
+        password1 = String.valueOf(passwordField1.getPassword());
+        password2 = String.valueOf(passwordField2.getPassword());
+        if (name.equals("") || password1.equals("") || password2.equals("")) {
+            JOptionPane.showMessageDialog(null, "请输入用户名或密码");
+        } else {
+            if (password1.equals(password2)) {
+                customer.setCustomer_name(name);
+                user.setPassword(password1);
+                user.setName(name);
+                if (FactoryService.factoryService.getiCustomerService().C_Regist(user, customer)) {
+                    JOptionPane.showMessageDialog(null, "注册成功！");
+                    this.dispose();
+                } else
+                    JOptionPane.showMessageDialog(null, "注册失败！");
+
+
+            } else
+                JOptionPane.showMessageDialog(null, "两次密码不对！");
+        }
+
+
     }
 
     private void initComponents() {
@@ -37,8 +73,8 @@ public class regist extends JFrame {
         password2 = new JLabel();
         regist_button = new JButton();
         username_text = new JTextField();
-        password1_text = new JTextField();
-        password2_text = new JTextField();
+        passwordField1 = new JPasswordField();
+        passwordField2 = new JPasswordField();
 
         //======== this ========
         setTitle("\u6ce8\u518c");
@@ -72,14 +108,15 @@ public class regist extends JFrame {
         //---- regist_button ----
         regist_button.setText("\u6ce8\u518c");
         regist_button.setFont(regist_button.getFont().deriveFont(regist_button.getFont().getSize() + 4f));
+        regist_button.addActionListener(e -> regist_buttonActionPerformed(e));
         contentPane.add(regist_button);
         regist_button.setBounds(140, 460, 120, regist_button.getPreferredSize().height);
         contentPane.add(username_text);
         username_text.setBounds(80, 170, 240, 30);
-        contentPane.add(password1_text);
-        password1_text.setBounds(80, 255, 240, 30);
-        contentPane.add(password2_text);
-        password2_text.setBounds(80, 340, 240, 30);
+        contentPane.add(passwordField1);
+        passwordField1.setBounds(80, 255, 240, 30);
+        contentPane.add(passwordField2);
+        passwordField2.setBounds(80, 340, 240, 30);
 
         {
             // compute preferred size

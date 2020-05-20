@@ -12,20 +12,18 @@ public class ICustomer implements CustomerDAO {
 
 
     @Override
-    public boolean AddCustomer(List<Customer> list) {
+    public boolean AddCustomer(Customer s) {
         Connection conn = DBUtil.getConnection();
         String sql = "insert into customer values(?,?,?,?,?)";
         PreparedStatement ps = null;
         try {
             ps = conn.prepareStatement(sql);
-            for(Customer s : list){
                 ps.setInt(1, s.getCustomer_id());
                 ps.setString(2, s.getCustomer_name());
                 ps.setString(3,s.getCustomer_sex());
                 ps.setString(4,s.getCustomer_sign());
                 ps.setString(5,s.getCustomer_phone());
                 ps.executeUpdate();
-            }
             return true;
         } catch (SQLException e) {
             // TODO Auto-generated catch block

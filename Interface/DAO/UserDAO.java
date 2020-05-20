@@ -8,6 +8,6 @@ public interface UserDAO {
 
     public String CheckPassword(String Name);
 
-    public boolean AddUser(List<User> list);
+    public boolean AddUser(User s);
 
 }

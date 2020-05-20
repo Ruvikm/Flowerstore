@@ -14,7 +14,7 @@ public interface CustomerDAO {
 
     public boolean SetCustomer_phone(int Customer_id,String Phone);
 
-    public boolean AddCustomer(List<Customer> list);
+    public boolean AddCustomer(Customer s);
 
     public Customer getCustomer(String Name);
 }
