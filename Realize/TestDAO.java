@@ -203,12 +203,14 @@ public class TestDAO {
         System.out.println(iUser.CheckPassword("Ruvik"));*/
 
 
+        //测试ChangePassword
+        /*String NewPassword="123321";
+        String Name="Ruvikm";
+        String sql = "Update user set password = '" + NewPassword + "'" + " where name =" + "''" + Name + "'";
+*/
+
         //endregion
 
-        /*String IdS="11";
-        String passwordS="123";
-        String sql="SELECT * FROM shop WHERE shopId='"+IdS+"'" +" AND shopPassword='"+passwordS+"'";
-        System.out.println(sql);*/
 
     }
 

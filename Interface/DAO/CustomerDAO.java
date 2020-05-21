@@ -16,5 +16,7 @@ public interface CustomerDAO {
 
     public boolean AddCustomer(Customer s);
 
-    public Customer getCustomer(String Name);
+    public Customer getCustomerbyId(int customerId);
+
+    public Customer getCustomerbyName(String Name);
 }

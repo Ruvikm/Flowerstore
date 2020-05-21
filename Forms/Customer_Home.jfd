@@ -11,6 +11,7 @@ new FormModel {
 			"$sizePolicy": 1
 			"$locationPolicy": 1
 			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowOpened", "thisWindowOpened", true ) )
+			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowActivated", "thisWindowActivated", true ) )
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 				name: "tabbedPane1"
 				"tabPlacement": 2
@@ -144,17 +145,17 @@ new FormModel {
 						"text": "我的资料"
 						"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 8, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 70
-						"y": 30
+						"x": 45
+						"y": 20
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "username"
 						"text": "用户名"
-						"labelFor": new FormReference( "usertext" )
+						"labelFor": new FormReference( "usernametext" )
 						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 160
-						"y": 85
+						"x": 135
+						"y": 60
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "sex"
@@ -162,8 +163,8 @@ new FormModel {
 						"labelFor": new FormReference( "sextext" )
 						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 160
-						"y": 125
+						"x": 135
+						"y": 100
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "phone"
@@ -171,8 +172,8 @@ new FormModel {
 						"labelFor": new FormReference( "phonetext" )
 						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 160
-						"y": 165
+						"x": 135
+						"y": 140
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "sign"
@@ -180,14 +181,14 @@ new FormModel {
 						"labelFor": new FormReference( "signtext" )
 						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 160
-						"y": 205
+						"x": 135
+						"y": 180
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "usertext"
+						name: "usernametext"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 230
-						"y": 80
+						"x": 205
+						"y": 55
 						"height": 30
 						"width": 230
 					} )
@@ -196,75 +197,59 @@ new FormModel {
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 						"width": 230
 						"height": 30
-						"x": 230
-						"y": 120
+						"x": 205
+						"y": 95
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "phonetext"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 						"width": 230
 						"height": 30
-						"x": 230
-						"y": 160
+						"x": 205
+						"y": 135
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "signtext"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 						"width": 230
 						"height": 65
-						"x": 230
-						"y": 200
+						"x": 205
+						"y": 175
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "PasswordTitle"
 						"text": "修改密码"
 						"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 8, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 70
-						"y": 290
+						"x": 45
+						"y": 305
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "originalP"
 						"text": "原密码"
-						"labelFor": new FormReference( "original_password" )
 						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 160
-						"y": 335
+						"x": 135
+						"y": 350
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "newP"
 						"text": "新密码"
-						"labelFor": new FormReference( "new_password" )
 						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 160
-						"y": 375
-					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "original_password"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"width": 230
-						"height": 30
-						"x": 230
-						"y": 330
-					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "new_password"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"width": 230
-						"height": 30
-						"x": 230
-						"y": 370
+						"x": 135
+						"y": 390
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "Save"
+						name: "SaveInformation"
 						"text": "保存"
-						"font": #SwingDerivedFont0
+						"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 2, false )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "SaveInformationActionPerformed", true ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 280
-						"y": 430
-						"width": 110
+						"x": 530
+						"y": 240
+						"width": 100
+						"height": 30
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "UserId_Title"
@@ -272,7 +257,7 @@ new FormModel {
 						"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 1, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 						"x": 530
-						"y": 25
+						"y": 15
 						"height": 20
 						"width": 48
 					} )
@@ -282,9 +267,45 @@ new FormModel {
 						"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 1, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 						"x": 590
-						"y": 25
+						"y": 15
 						"height": 20
 						"width": 50
+					} )
+					add( new FormComponent( "javax.swing.JPasswordField" ) {
+						name: "original_password"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 205
+						"y": 350
+						"width": 230
+						"height": 30
+					} )
+					add( new FormComponent( "javax.swing.JPasswordField" ) {
+						name: "new_password"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 205
+						"y": 390
+						"width": 230
+						"height": 30
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "SavePass"
+						"text": "保存"
+						"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 2, false )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "SavePassActionPerformed", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 530
+						"y": 445
+						"width": 100
+						"height": 30
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label2"
+						"text": "¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"y": 285
+						"width": 675
+						"height": 8
+						"x": 5
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "关于我"
@@ -292,12 +313,12 @@ new FormModel {
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 0
 				"y": 5
-				"width": 750
-				"height": 495
+				"width": 765
+				"height": 510
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 760, 540 )
+			"location": new java.awt.Point( 5, 0 )
+			"size": new java.awt.Dimension( 780, 560 )
 		} )
 	}
 }

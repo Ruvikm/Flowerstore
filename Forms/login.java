@@ -30,10 +30,12 @@ public class login extends JFrame {
     private JRadioButton manager_check;
     private JLabel registered;
     private JLabel Login_title;
+    // JFormDesigner - End of variables declaration  //GEN-END:variables
+
     public login(){
         initComponents();
     }
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
+
     public static void main(String[] args) {
         try {
             // 设置本机系统外观

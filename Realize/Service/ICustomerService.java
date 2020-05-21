@@ -30,7 +30,7 @@ public class ICustomerService implements CustomerService {
 
         IUser iUser = FactoryDAO.getIUser();
         String Password = iUser.CheckPassword(Name);
-        if (Password.equals(MyPassword) && !Name.equals("root")) {
+        if (MyPassword.equals(Password) && !Name.equals("root")) {
             return true;
         }
         return false;
@@ -40,7 +40,7 @@ public class ICustomerService implements CustomerService {
     public boolean C_Regist(User user, Customer customer) {
 
         FactoryDAO.getICustomer().AddCustomer(customer);
-        user.setUser_id(FactoryDAO.getICustomer().getCustomer(customer.getCustomer_name()).getCustomer_id());
+        user.setUser_id(FactoryDAO.getICustomer().getCustomerbyName(customer.getCustomer_name()).getCustomer_id());
         if (FactoryDAO.getIUser().AddUser(user))
             return true;
         return false;

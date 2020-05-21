@@ -10,4 +10,6 @@ public interface UserDAO {
 
     public boolean AddUser(User s);
 
+    public boolean ChangePassword(int id,String NewPassword);
+
 }

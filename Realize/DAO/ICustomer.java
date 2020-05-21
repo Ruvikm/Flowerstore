@@ -108,7 +108,7 @@ public class ICustomer implements CustomerDAO {
     }
 
     @Override
-    public Customer getCustomer(String Name) {
+    public Customer getCustomerbyId(int customerId) {
 
         Connection conn = null;
         ResultSet rs = null;
@@ -117,7 +117,35 @@ public class ICustomer implements CustomerDAO {
         Customer customer= new Customer();
 
         try {
-            String sql = "select * from customer where customer_name = '"+Name+"'";
+            String sql = "select * from customer where customer_id = "+customerId;
+            st = conn.createStatement();
+            rs = st.executeQuery(sql);
+            rs.next();
+            customer.setCustomer_id(rs.getInt(1));
+            customer.setCustomer_name(rs.getString(2));
+            customer.setCustomer_sex(rs.getString(3));
+            customer.setCustomer_sign(rs.getString(4));
+            customer.setCustomer_phone(rs.getString(5));
+            return customer;
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally{
+            DBUtil.close(conn, st, null, rs);
+        }
+        return null;
+    }
+
+    @Override
+    public Customer getCustomerbyName(String Name) {
+        Connection conn = null;
+        ResultSet rs = null;
+        Statement st = null;
+        conn = DBUtil.getConnection();
+        Customer customer= new Customer();
+
+        try {
+            String sql = "select * from customer where customer_name = "+"'"+Name+"'";
             st = conn.createStatement();
             rs = st.executeQuery(sql);
             rs.next();

@@ -23,10 +23,11 @@ public class Manager_Home extends JFrame {
     private JTextField textField3;
     private JButton button1;
     private JPanel panel1;
+    // JFormDesigner - End of variables declaration  //GEN-END:variables
+
     public Manager_Home(){
         initComponents();
     }
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
     public static void main(String[] args) {
         new Manager_Home().setVisible(true);
     }
