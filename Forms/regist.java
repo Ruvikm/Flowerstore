@@ -29,10 +29,10 @@ public class regist extends JFrame {
     private JTextField username_text;
     private JPasswordField passwordField1;
     private JPasswordField passwordField2;
+    // JFormDesigner - End of variables declaration  //GEN-END:variables
     public regist(){
         initComponents();
     }
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     private void regist_buttonActionPerformed(ActionEvent e) {
         // TODO add your code here
@@ -51,11 +51,11 @@ public class regist extends JFrame {
                 customer.setCustomer_name(name);
                 user.setPassword(password1);
                 user.setName(name);
-                if (FactoryService.factoryService.getiCustomerService().C_Regist(user, customer)) {
+                if (FactoryService.getiCustomerService().C_Regist(user, customer)) {
                     JOptionPane.showMessageDialog(null, "注册成功！");
                     this.dispose();
                 } else
-                    JOptionPane.showMessageDialog(null, "注册失败！");
+                    JOptionPane.showMessageDialog(null, "已有用户名！");
 
 
             } else

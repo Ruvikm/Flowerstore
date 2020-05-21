@@ -28,9 +28,6 @@ public class Manager_Home extends JFrame {
     public Manager_Home(){
         initComponents();
     }
-    public static void main(String[] args) {
-        new Manager_Home().setVisible(true);
-    }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents

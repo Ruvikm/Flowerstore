@@ -24,4 +24,7 @@ public interface FlowerDAO {
     //培育新鲜花
     public boolean AddFlower(List<Flower> list);
 
+    //查询所有鲜花
+    public List<Flower> CheckAllFlowers();
+
 }

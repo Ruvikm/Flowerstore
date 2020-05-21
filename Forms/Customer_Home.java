@@ -5,10 +5,13 @@
 package FlowerStore.Forms;
 
 import FlowerStore.Entity.Customer;
+import FlowerStore.Entity.Flower;
 import FlowerStore.Factory.FactoryDAO;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.UIManager;
 
@@ -17,13 +20,17 @@ import javax.swing.UIManager;
  */
 public class Customer_Home extends JFrame {
 
-    private String name=login.name;
-    Customer customer=FactoryDAO.getICustomer().getCustomerbyName(name);
-    private int CustomerID=customer.getCustomer_id();
+    private String name;
+    private Customer customer=new Customer();
+    private int CustomerID;
+    private List<Flower> flowerList=new ArrayList<>();
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JTabbedPane tabbedPane1;
     private JPanel Check;
+    private JMenu menu1;
+    private JMenuItem menuItem3;
+    private JMenuItem menuItem4;
     private JPanel Buy;
     private JLabel label1;
     private JLabel label9;
@@ -68,11 +75,20 @@ public class Customer_Home extends JFrame {
     }
     private void thisWindowOpened(WindowEvent e) {
         // TODO add your code here
+
+        //region 个人信息获取及自动填充
+        name=login.name;
+        customer=FactoryDAO.getICustomer().getCustomerbyName(name);
+        CustomerID=customer.getCustomer_id();
         UserID.setText(Integer.toString(customer.getCustomer_id()));
         usernametext.setText(customer.getCustomer_name());
         sextext.setText(customer.getCustomer_sex());
         phonetext.setText(customer.getCustomer_phone());
         signtext.setText(customer.getCustomer_sign());
+        //endregion
+
+        //region 获取全部花
+        flowerList=FactoryDAO.getIFlowers().CheckAllFlowers();
 
 
     }
@@ -116,6 +132,9 @@ public class Customer_Home extends JFrame {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         tabbedPane1 = new JTabbedPane();
         Check = new JPanel();
+        menu1 = new JMenu();
+        menuItem3 = new JMenuItem();
+        menuItem4 = new JMenuItem();
         Buy = new JPanel();
         label1 = new JLabel();
         label9 = new JLabel();
@@ -177,6 +196,21 @@ public class Customer_Home extends JFrame {
             //======== Check ========
             {
                 Check.setLayout(null);
+
+                //======== menu1 ========
+                {
+                    menu1.setText("22 ");
+
+                    //---- menuItem3 ----
+                    menuItem3.setText("33");
+                    menu1.add(menuItem3);
+
+                    //---- menuItem4 ----
+                    menuItem4.setText("44");
+                    menu1.add(menuItem4);
+                }
+                Check.add(menu1);
+                menu1.setBounds(50, 30, 55, 30);
 
                 {
                     // compute preferred size

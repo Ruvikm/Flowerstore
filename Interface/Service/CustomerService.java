@@ -1,13 +1,14 @@
 package FlowerStore.Interface.Service;
 
 import FlowerStore.Entity.Customer;
+import FlowerStore.Entity.Flower;
 import FlowerStore.Entity.User;
 
 import java.util.List;
 
 public interface CustomerService {
 
-    public void CheckFlowers();//查询鲜花
+    public List<Flower> CheckAllFlowers();//查询鲜花
 
     public void Buy();//购买鲜花
 

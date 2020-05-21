@@ -172,4 +172,36 @@ public class IFlowers implements FlowerDAO {
         }
         return false;
     }
+
+    @Override
+    public List<Flower> CheckAllFlowers() {
+        Connection conn = null;
+        ResultSet rs = null;
+        Statement st = null;
+        conn = DBUtil.getConnection();
+
+        List<Flower> list = new ArrayList<Flower>();
+        try {
+            String sql = "select * from flower";
+            st = conn.createStatement();
+            rs = st.executeQuery(sql);
+
+            while(rs.next()){
+                Flower flower=new Flower();
+                flower.setFlower_id(rs.getInt(1));
+                flower.setFlower_name(rs.getString(2));
+                flower.setFlower_num(rs.getInt(3));
+                flower.setFlower_color(rs.getString(4));
+                flower.setStore_id(rs.getInt(5));
+                list.add(flower);
+            }
+            return list;
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally{
+            DBUtil.close(conn, st, null, rs);
+        }
+        return null;
+    }
 }

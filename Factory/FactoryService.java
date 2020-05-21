@@ -5,17 +5,17 @@ import FlowerStore.Realize.Service.IFlowerStoreService;
 
 public class FactoryService {
 
-    public static FactoryService factoryService=new FactoryService();
+    private static FactoryService factoryService =new FactoryService();
 
-    public FactoryService getFactoryService(){
+    public static FactoryService getFactoryService(){
         return factoryService;
     }
 
-    public IFlowerStoreService getFlowerStoreService(){
+    public static IFlowerStoreService getFlowerStoreService(){
         return new IFlowerStoreService();
     }
 
-    public ICustomerService getiCustomerService(){
+    public static ICustomerService getiCustomerService(){
         return new ICustomerService();
     }
 

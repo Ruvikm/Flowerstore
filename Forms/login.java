@@ -52,8 +52,8 @@ public class login extends JFrame {
         name = username_test.getText();
         password = String.valueOf(password_test.getPassword());
         //System.out.println(name+"  "+password);
-        IFlowerStoreService iFlowerStoreService = FactoryService.factoryService.getFlowerStoreService();
-        ICustomerService iCustomerService = FactoryService.factoryService.getiCustomerService();
+        IFlowerStoreService iFlowerStoreService = FactoryService.getFlowerStoreService();
+        ICustomerService iCustomerService = FactoryService.getiCustomerService();
         if (!name.equals("") && !password.equals("")) {
             if (select.equals("管理员")) {
                 if (iFlowerStoreService.Login(name, password)) {
@@ -117,13 +117,13 @@ public class login extends JFrame {
         Login_user.setText("\u7528\u6237\u540d");
         Login_user.setFont(Login_user.getFont().deriveFont(Login_user.getFont().getSize() + 4f));
         contentPane.add(Login_user);
-        Login_user.setBounds(90, 155, 50, Login_user.getPreferredSize().height);
+        Login_user.setBounds(90, 155, 65, Login_user.getPreferredSize().height);
 
         //---- Login_password ----
         Login_password.setText("\u5bc6\u7801");
         Login_password.setFont(Login_password.getFont().deriveFont(Login_password.getFont().getSize() + 4f));
         contentPane.add(Login_password);
-        Login_password.setBounds(90, 280, 40, Login_password.getPreferredSize().height);
+        Login_password.setBounds(90, 280, 60, Login_password.getPreferredSize().height);
         contentPane.add(username_test);
         username_test.setBounds(90, 190, 220, 28);
         contentPane.add(password_test);
