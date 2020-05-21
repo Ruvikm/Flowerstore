@@ -27,4 +27,10 @@ public interface FlowerDAO {
     //查询所有鲜花
     public List<Flower> CheckAllFlowers();
 
+    //查询所有颜色
+    public List<String> checkAllColors();
+
+    //查询所有店铺ID
+    public List<Integer> checkAllShops();
+
 }

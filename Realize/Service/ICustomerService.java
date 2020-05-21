@@ -13,8 +13,22 @@ import java.util.List;
 public class ICustomerService implements CustomerService {
 
     @Override
-    public List<Flower> CheckAllFlowers() {
-        return FactoryDAO.getIFlowers().CheckAllFlowers();
+    public Object[][] CheckAllFlowers(String head[]) {
+        //生成表格数据
+            Object [][]data=null;
+            List<Flower> list=FactoryDAO.getIFlowers().CheckAllFlowers();
+            data=new Object[list.size()][head.length];
+
+            for(int i=0;i<list.size();i++){
+                for(int j=0;j<head.length;j++){
+                    data[i][0]=list.get(i).getFlower_name();
+                    data[i][1]=list.get(i).getFlower_price();
+                    data[i][2]=list.get(i).getFlower_num();
+                    data[i][3]=list.get(i).getFlower_color();
+                    data[i][4]=FactoryDAO.getIStore().CheckStoreByID(list.get(i).getStore_id()).getStore_name();
+                }
+            }
+            return data;
     }
 
     @Override

@@ -16,5 +16,7 @@ public interface StoreDAO {
 
     public boolean SetStoreManager(int Store_id,int store_manager);
 
+    public Store CheckStoreByID(int StoreID);
+
 
 }

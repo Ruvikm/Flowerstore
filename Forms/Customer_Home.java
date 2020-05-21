@@ -4,9 +4,11 @@
 
 package FlowerStore.Forms;
 
+import javax.swing.table.*;
 import FlowerStore.Entity.Customer;
 import FlowerStore.Entity.Flower;
 import FlowerStore.Factory.FactoryDAO;
+import FlowerStore.Factory.FactoryService;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -23,14 +25,29 @@ public class Customer_Home extends JFrame {
     private String name;
     private Customer customer=new Customer();
     private int CustomerID;
-    private List<Flower> flowerList=new ArrayList<>();
-
+    List<Flower> list=new ArrayList<>();
+    private String head[]=new String[] {"名字", "价格","数量", "颜色", "有货商店"};
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JTabbedPane tabbedPane1;
     private JPanel Check;
-    private JMenu menu1;
-    private JMenuItem menuItem3;
-    private JMenuItem menuItem4;
+    private JScrollPane scrollPane1;
+    private JTable FlowerList;
+    private JLabel ChooseTitle;
+    private JLabel Namelabel;
+    private JLabel Pricelabel;
+    private JTextField price1;
+    private JTextField price2;
+    private JLabel label6;
+    private JLabel numlabel;
+    private JTextField num1;
+    private JTextField num2;
+    private JLabel label8;
+    private JLabel label18;
+    private JLabel label19;
+    private JComboBox comboBox_name;
+    private JComboBox comboBox_color;
+    private JComboBox comboBox_shop;
+    private JButton buttonchoose;
     private JPanel Buy;
     private JLabel label1;
     private JLabel label9;
@@ -87,8 +104,37 @@ public class Customer_Home extends JFrame {
         signtext.setText(customer.getCustomer_sign());
         //endregion
 
-        //region 获取全部花
-        flowerList=FactoryDAO.getIFlowers().CheckAllFlowers();
+        //region 获取全部花的信息
+        DefaultTableModel tableModel=new DefaultTableModel(FactoryService.getiCustomerService().CheckAllFlowers(head),head);
+        FlowerList.setModel(tableModel);//填充Jtable
+
+        //自动填充下拉菜单
+        list=FactoryDAO.getIFlowers().CheckAllFlowers();
+        //填充名字(名字不会出现重复)
+        for(Flower v:list){
+            comboBox_name.addItem(v.getFlower_name());
+        }
+        //填充颜色
+        List<String> ColorList=FactoryDAO.getIFlowers().checkAllColors();
+        for(String v:ColorList){
+            comboBox_color.addItem(v);
+        }
+        //填充商店
+        List<Integer> ShopID=FactoryDAO.getIFlowers().checkAllShops();
+        for(Integer v:ShopID){
+            comboBox_shop.addItem(FactoryDAO.getIStore().CheckStoreByID(v).getStore_name());
+        }
+        comboBox_name.setSelectedIndex(-1);
+        comboBox_color.setSelectedIndex(-1);
+        comboBox_shop.setSelectedIndex(-1);
+
+
+
+
+        //endregion
+
+
+
 
 
     }
@@ -124,17 +170,43 @@ public class Customer_Home extends JFrame {
         }
     }
 
-    private void thisWindowActivated(WindowEvent e) {
+    private void buttonchooseActionPerformed(ActionEvent e) {
         // TODO add your code here
+        String name="";
+        String color="";
+        String ShopName="";
+        if(comboBox_name.getSelectedItem()!=null)
+             name = (String)comboBox_name.getSelectedItem(); //获取被选中的项
+        if(comboBox_color.getSelectedItem()!=null)
+            color = (String)comboBox_color.getSelectedItem();
+        if(comboBox_shop.getSelectedItem()!=null)
+            ShopName = (String)comboBox_shop.getSelectedItem();
+        //System.out.println(name+color+ShopName);
+
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         tabbedPane1 = new JTabbedPane();
         Check = new JPanel();
-        menu1 = new JMenu();
-        menuItem3 = new JMenuItem();
-        menuItem4 = new JMenuItem();
+        scrollPane1 = new JScrollPane();
+        FlowerList = new JTable();
+        ChooseTitle = new JLabel();
+        Namelabel = new JLabel();
+        Pricelabel = new JLabel();
+        price1 = new JTextField();
+        price2 = new JTextField();
+        label6 = new JLabel();
+        numlabel = new JLabel();
+        num1 = new JTextField();
+        num2 = new JTextField();
+        label8 = new JLabel();
+        label18 = new JLabel();
+        label19 = new JLabel();
+        comboBox_name = new JComboBox();
+        comboBox_color = new JComboBox();
+        comboBox_shop = new JComboBox();
+        buttonchoose = new JButton();
         Buy = new JPanel();
         label1 = new JLabel();
         label9 = new JLabel();
@@ -177,10 +249,6 @@ public class Customer_Home extends JFrame {
         setIconImage(null);
         addWindowListener(new WindowAdapter() {
             @Override
-            public void windowActivated(WindowEvent e) {
-                thisWindowActivated(e);
-            }
-            @Override
             public void windowOpened(WindowEvent e) {
                 thisWindowOpened(e);
             }
@@ -197,20 +265,109 @@ public class Customer_Home extends JFrame {
             {
                 Check.setLayout(null);
 
-                //======== menu1 ========
+                //======== scrollPane1 ========
                 {
-                    menu1.setText("22 ");
 
-                    //---- menuItem3 ----
-                    menuItem3.setText("33");
-                    menu1.add(menuItem3);
-
-                    //---- menuItem4 ----
-                    menuItem4.setText("44");
-                    menu1.add(menuItem4);
+                    //---- FlowerList ----
+                    FlowerList.setModel(new DefaultTableModel(
+                        new Object[][] {
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                        },
+                        new String[] {
+                            null, null, null, null, null
+                        }
+                    ));
+                    scrollPane1.setViewportView(FlowerList);
                 }
-                Check.add(menu1);
-                menu1.setBounds(50, 30, 55, 30);
+                Check.add(scrollPane1);
+                scrollPane1.setBounds(0, 0, 690, 250);
+
+                //---- ChooseTitle ----
+                ChooseTitle.setText("\u7b5b\u9009");
+                ChooseTitle.setFont(ChooseTitle.getFont().deriveFont(ChooseTitle.getFont().getSize() + 2f));
+                Check.add(ChooseTitle);
+                ChooseTitle.setBounds(25, 275, 45, 20);
+
+                //---- Namelabel ----
+                Namelabel.setText("\u82b1\u540d");
+                Namelabel.setFont(Namelabel.getFont().deriveFont(Namelabel.getFont().getSize() + 2f));
+                Namelabel.setLabelFor(comboBox_name);
+                Check.add(Namelabel);
+                Namelabel.setBounds(60, 320, 45, 20);
+
+                //---- Pricelabel ----
+                Pricelabel.setText("\u4ef7\u683c\u533a\u95f4");
+                Pricelabel.setFont(Pricelabel.getFont().deriveFont(Pricelabel.getFont().getSize() + 2f));
+                Check.add(Pricelabel);
+                Pricelabel.setBounds(new Rectangle(new Point(375, 321), Pricelabel.getPreferredSize()));
+                Check.add(price1);
+                price1.setBounds(460, 315, 50, 30);
+                Check.add(price2);
+                price2.setBounds(570, 315, 50, 30);
+
+                //---- label6 ----
+                label6.setText("- - - - -");
+                Check.add(label6);
+                label6.setBounds(520, 322, 40, label6.getPreferredSize().height);
+
+                //---- numlabel ----
+                numlabel.setText("\u6570\u91cf\u533a\u95f4");
+                numlabel.setFont(numlabel.getFont().deriveFont(numlabel.getFont().getSize() + 2f));
+                Check.add(numlabel);
+                numlabel.setBounds(new Rectangle(new Point(375, 383), numlabel.getPreferredSize()));
+                Check.add(num1);
+                num1.setBounds(460, 377, 50, 30);
+                Check.add(num2);
+                num2.setBounds(570, 377, 50, 30);
+
+                //---- label8 ----
+                label8.setText("- - - - -");
+                Check.add(label8);
+                label8.setBounds(520, 384, 40, 17);
+
+                //---- label18 ----
+                label18.setText("\u989c\u8272");
+                label18.setFont(label18.getFont().deriveFont(label18.getFont().getSize() + 2f));
+                label18.setLabelFor(comboBox_color);
+                Check.add(label18);
+                label18.setBounds(new Rectangle(new Point(60, 383), label18.getPreferredSize()));
+
+                //---- label19 ----
+                label19.setText("\u6240\u5728\u5e97\u94fa");
+                label19.setFont(label19.getFont().deriveFont(label19.getFont().getSize() + 2f));
+                label19.setLabelFor(comboBox_shop);
+                Check.add(label19);
+                label19.setBounds(new Rectangle(new Point(60, 445), label19.getPreferredSize()));
+
+                //---- comboBox_name ----
+                comboBox_name.setSelectedIndex(-1);
+                Check.add(comboBox_name);
+                comboBox_name.setBounds(140, 315, 84, 30);
+
+                //---- comboBox_color ----
+                comboBox_color.setSelectedIndex(-1);
+                Check.add(comboBox_color);
+                comboBox_color.setBounds(140, 377, 84, 30);
+
+                //---- comboBox_shop ----
+                comboBox_shop.setSelectedIndex(-1);
+                Check.add(comboBox_shop);
+                comboBox_shop.setBounds(140, 439, 84, 30);
+
+                //---- buttonchoose ----
+                buttonchoose.setText("\u7b5b\u9009");
+                buttonchoose.addActionListener(e -> buttonchooseActionPerformed(e));
+                Check.add(buttonchoose);
+                buttonchoose.setBounds(545, 450, 85, 31);
 
                 {
                     // compute preferred size

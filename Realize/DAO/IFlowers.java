@@ -28,8 +28,9 @@ public class IFlowers implements FlowerDAO {
             flower.setFlower_id(rs.getInt(1));
             flower.setFlower_name(rs.getString(2));
             flower.setFlower_num(rs.getInt(3));
-            flower.setFlower_color(rs.getString(4));
-            flower.setStore_id(rs.getInt(5));
+            flower.setFlower_price(rs.getInt(4));
+            flower.setFlower_color(rs.getString(5));
+            flower.setStore_id(rs.getInt(6));
             return flower;
 
         } catch (SQLException throwable) {
@@ -59,8 +60,9 @@ public class IFlowers implements FlowerDAO {
                 flower.setFlower_id(rs.getInt(1));
                 flower.setFlower_name(rs.getString(2));
                 flower.setFlower_num(rs.getInt(3));
-                flower.setFlower_color(rs.getString(4));
-                flower.setStore_id(rs.getInt(5));
+                flower.setFlower_price(rs.getInt(4));
+                flower.setFlower_color(rs.getString(5));
+                flower.setStore_id(rs.getInt(6));
                 list.add(flower);
             }
             return list;
@@ -92,8 +94,9 @@ public class IFlowers implements FlowerDAO {
                 flower.setFlower_id(rs.getInt(1));
                 flower.setFlower_name(rs.getString(2));
                 flower.setFlower_num(rs.getInt(3));
-                flower.setFlower_color(rs.getString(4));
-                flower.setStore_id(rs.getInt(5));
+                flower.setFlower_price(rs.getInt(4));
+                flower.setFlower_color(rs.getString(5));
+                flower.setStore_id(rs.getInt(6));
                 list.add(flower);
             }
             return list;
@@ -151,7 +154,7 @@ public class IFlowers implements FlowerDAO {
     public boolean AddFlower(List<Flower> list) {
 
         Connection conn = DBUtil.getConnection();
-        String sql = "insert into flower values(?,?,?,?,?)";
+        String sql = "insert into flower values(?,?,?,?,?,?)";
         PreparedStatement ps = null;
         try {
             ps = conn.prepareStatement(sql);
@@ -159,8 +162,9 @@ public class IFlowers implements FlowerDAO {
                 ps.setInt(1, s.getFlower_id());
                 ps.setString(2, s.getFlower_name());
                 ps.setInt(3,s.getFlower_num());
-                ps.setString(4,s.getFlower_color());
-                ps.setInt(5,s.getStore_id());
+                ps.setInt(4,s.getFlower_price());
+                ps.setString(5,s.getFlower_color());
+                ps.setInt(6,s.getStore_id());
                 ps.executeUpdate();
             }
             return true;
@@ -191,9 +195,66 @@ public class IFlowers implements FlowerDAO {
                 flower.setFlower_id(rs.getInt(1));
                 flower.setFlower_name(rs.getString(2));
                 flower.setFlower_num(rs.getInt(3));
-                flower.setFlower_color(rs.getString(4));
-                flower.setStore_id(rs.getInt(5));
+                flower.setFlower_price(rs.getInt(4));
+                flower.setFlower_color(rs.getString(5));
+                flower.setStore_id(rs.getInt(6));
                 list.add(flower);
+            }
+            return list;
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally{
+            DBUtil.close(conn, st, null, rs);
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> checkAllColors() {
+        Connection conn = null;
+        ResultSet rs = null;
+        Statement st = null;
+        conn = DBUtil.getConnection();
+
+        List<String> list = new ArrayList<>();
+        try {
+            String sql = "SELECT  DISTINCT flower_color FROM flower";
+            st = conn.createStatement();
+            rs = st.executeQuery(sql);
+
+            while(rs.next()){
+                Flower flower=new Flower();
+                flower.setFlower_color(rs.getString(1));
+                list.add(flower.getFlower_color());
+            }
+            return list;
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally{
+            DBUtil.close(conn, st, null, rs);
+        }
+        return null;
+    }
+
+    @Override
+    public List<Integer> checkAllShops() {
+        Connection conn = null;
+        ResultSet rs = null;
+        Statement st = null;
+        conn = DBUtil.getConnection();
+
+        List<Integer> list = new ArrayList<>();
+        try {
+            String sql = "SELECT  DISTINCT store_id FROM flower";
+            st = conn.createStatement();
+            rs = st.executeQuery(sql);
+
+            while(rs.next()){
+                Flower flower=new Flower();
+                flower.setStore_id(rs.getInt(1));
+                list.add(flower.getStore_id());
             }
             return list;
 

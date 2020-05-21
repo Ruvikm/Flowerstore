@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CustomerService {
 
-    public List<Flower> CheckAllFlowers();//查询鲜花
+    public Object[][] CheckAllFlowers(String head[]);//查询鲜花
 
     public void Buy();//购买鲜花
 

@@ -4,6 +4,7 @@ public class Flower {
     private int flower_id;
     private String flower_name;
     private int flower_num;
+    private int flower_price;
     private String flower_color;
     private int store_id;
 
@@ -45,5 +46,13 @@ public class Flower {
 
     public void setStore_id(int store_id) {
         this.store_id = store_id;
+    }
+
+    public int getFlower_price() {
+        return flower_price;
+    }
+
+    public void setFlower_price(int flower_price) {
+        this.flower_price = flower_price;
     }
 }

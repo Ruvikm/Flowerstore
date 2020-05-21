@@ -36,17 +36,6 @@ public class login extends JFrame {
         initComponents();
     }
 
-    public static void main(String[] args) {
-        try {
-            // 设置本机系统外观
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");//Nimbus风格，jdk6 update10版本以后的才会出现
-            new login().setVisible(true);
-       } catch (Exception e) {
-         e.printStackTrace();
-       }
-
-    }
-
     private void Login_buttonActionPerformed(ActionEvent e) {
         // TODO add your code here
         name = username_test.getText();
