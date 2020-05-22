@@ -71,6 +71,20 @@ public class TestDAO {
         IFlowers iFlowers = IFlowers.getIFlowers();
         iFlowers.AddFlower(list);*/
 
+        String FlowerName=null;
+        String FlowerColor="黄色";
+        String ShopName=null;
+        int LowNum=0;
+        int HighNum=0;
+        int LowPrice=0;
+        int HighPrice=0;
+        String sql = "select * from flower    where(" + "'" + FlowerName + "'" + " is null or flower_name like " + "'" + FlowerName + "'" + ")" +
+                "                               and(" + "'" + FlowerColor + "'" + " is null or flower_color like " + "'" + FlowerColor + "'" + ")" +
+                "                               and(" + "'" + ShopName + "'" + " is null or store_id like  (select store_id from flowerstore where store_name ='" + ShopName + "'" + ")" + ")" +
+                "                               and(" + LowNum + "!= 0 and " + HighNum + "!=0" + " or flower_num >= " + LowNum + " and flower_num <= " + HighNum + ")" +
+                "                               and(" + LowPrice + "!= 0 and " + HighPrice + "!=0" + " or flower_price >=" + LowPrice + " and flower_price <=" + HighPrice + ")";
+        System.out.println(sql);
+
         //endregion
 
 

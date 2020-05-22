@@ -26,6 +26,7 @@ public class Customer_Home extends JFrame {
     private Customer customer=new Customer();
     private int CustomerID;
     List<Flower> list=new ArrayList<>();
+    DefaultTableModel tableModel=new DefaultTableModel();
     private String head[]=new String[] {"名字", "价格","数量", "颜色", "有货商店"};
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JTabbedPane tabbedPane1;
@@ -92,50 +93,7 @@ public class Customer_Home extends JFrame {
     }
     private void thisWindowOpened(WindowEvent e) {
         // TODO add your code here
-
-        //region 个人信息获取及自动填充
-        name=login.name;
-        customer=FactoryDAO.getICustomer().getCustomerbyName(name);
-        CustomerID=customer.getCustomer_id();
-        UserID.setText(Integer.toString(customer.getCustomer_id()));
-        usernametext.setText(customer.getCustomer_name());
-        sextext.setText(customer.getCustomer_sex());
-        phonetext.setText(customer.getCustomer_phone());
-        signtext.setText(customer.getCustomer_sign());
-        //endregion
-
-        //region 获取全部花的信息
-        DefaultTableModel tableModel=new DefaultTableModel(FactoryService.getiCustomerService().CheckAllFlowers(head),head);
-        FlowerList.setModel(tableModel);//填充Jtable
-
-        //自动填充下拉菜单
-        list=FactoryDAO.getIFlowers().CheckAllFlowers();
-        //填充名字(名字不会出现重复)
-        for(Flower v:list){
-            comboBox_name.addItem(v.getFlower_name());
-        }
-        //填充颜色
-        List<String> ColorList=FactoryDAO.getIFlowers().checkAllColors();
-        for(String v:ColorList){
-            comboBox_color.addItem(v);
-        }
-        //填充商店
-        List<Integer> ShopID=FactoryDAO.getIFlowers().checkAllShops();
-        for(Integer v:ShopID){
-            comboBox_shop.addItem(FactoryDAO.getIStore().CheckStoreByID(v).getStore_name());
-        }
-        comboBox_name.setSelectedIndex(-1);
-        comboBox_color.setSelectedIndex(-1);
-        comboBox_shop.setSelectedIndex(-1);
-
-
-
-
-        //endregion
-
-
-
-
+        InitData();
 
     }
 
@@ -172,17 +130,81 @@ public class Customer_Home extends JFrame {
 
     private void buttonchooseActionPerformed(ActionEvent e) {
         // TODO add your code here
-        String name="";
-        String color="";
-        String ShopName="";
-        if(comboBox_name.getSelectedItem()!=null)
-             name = (String)comboBox_name.getSelectedItem(); //获取被选中的项
-        if(comboBox_color.getSelectedItem()!=null)
-            color = (String)comboBox_color.getSelectedItem();
-        if(comboBox_shop.getSelectedItem()!=null)
-            ShopName = (String)comboBox_shop.getSelectedItem();
+        String flowerName = null;
+        String color = null;
+        String ShopName = null;
+        int LowNum=-1;
+        int HighNum=-1;
+        int LowPrice=-1;
+        int HighPrice=-1;
+        if(!price1.getText().equals(""))
+            LowPrice=Integer.parseInt(price1.getText());
+        if(!price2.getText().equals(""))
+            HighPrice=Integer.parseInt(price2.getText());
+        if(!num1.getText().equals(""))
+            LowNum=Integer.parseInt(num1.getText());
+        if(!num2.getText().equals(""))
+            HighNum=Integer.parseInt(num2.getText());
+        if (comboBox_name.getSelectedItem() != null) {
+            flowerName = (String) comboBox_name.getSelectedItem();
+        } //获取被选中的项
+        if (comboBox_color.getSelectedItem() != null) {
+            color = (String) comboBox_color.getSelectedItem();
+            System.out.println(color);
+        }
+        if (comboBox_shop.getSelectedItem() != null) {
+            ShopName = (String) comboBox_shop.getSelectedItem();
+        }
+
+        tableModel.getDataVector().clear();
+        tableModel=new DefaultTableModel(FactoryService.getiCustomerService().FilterFlowers(flowerName,color,ShopName,LowNum,HighNum,LowPrice,HighPrice,head),head);
+        FlowerList.setModel(tableModel);//填充Jtable
+        Check.revalidate();
+        scrollPane1.validate();
+
+        
         //System.out.println(name+color+ShopName);
 
+    }
+
+    private void InitData(){
+
+        //region 个人信息获取及自动填充
+        name=login.name;
+        customer=FactoryDAO.getICustomer().getCustomerbyName(name);
+        CustomerID=customer.getCustomer_id();
+        UserID.setText(Integer.toString(customer.getCustomer_id()));
+        usernametext.setText(customer.getCustomer_name());
+        sextext.setText(customer.getCustomer_sex());
+        phonetext.setText(customer.getCustomer_phone());
+        signtext.setText(customer.getCustomer_sign());
+        //endregion
+
+        //region 获取全部花的信息
+        tableModel=new DefaultTableModel(FactoryService.getiCustomerService().CheckAllFlowers(head),head);
+        FlowerList.setModel(tableModel);//填充Jtable
+
+        //第一个为空值,默认不选以及可以实现多次选择
+        comboBox_name.addItem(null);
+        comboBox_color.addItem(null);
+        comboBox_shop.addItem(null);
+        //自动填充下拉菜单
+        list=FactoryDAO.getIFlowers().CheckAllFlowers();
+        //填充名字(名字不会出现重复)
+        for(Flower v:list){
+            comboBox_name.addItem(v.getFlower_name());
+        }
+        //填充颜色
+        List<String> ColorList=FactoryDAO.getIFlowers().checkAllColors();
+        for(String v:ColorList){
+            comboBox_color.addItem(v);
+        }
+        //填充商店
+        List<Integer> ShopID=FactoryDAO.getIFlowers().checkAllShops();
+        for(Integer v:ShopID){
+            comboBox_shop.addItem(FactoryDAO.getIStore().CheckStoreByID(v).getStore_name());
+        }
+        //endregion
     }
 
     private void initComponents() {
