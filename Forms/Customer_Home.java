@@ -65,6 +65,8 @@ public class Customer_Home extends JFrame {
     private JButton button3;
     private JPanel shopping_cart;
     private JButton button4;
+    private JScrollPane scrollPane2;
+    private JTable table1;
     private JPanel Orders;
     private JPanel Me;
     private JLabel Title;
@@ -181,8 +183,16 @@ public class Customer_Home extends JFrame {
         //endregion
 
         //region 获取全部花的信息
-        tableModel=new DefaultTableModel(FactoryService.getiCustomerService().CheckAllFlowers(head),head);
+        tableModel=new DefaultTableModel(FactoryService.getiCustomerService().CheckAllFlowers(head),head){
+            //使不可编辑
+            public boolean isCellEditable(int row, int column)
+            {
+                return false;
+            }
+        };
         FlowerList.setModel(tableModel);//填充Jtable
+        FlowerList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);//
+
 
         //第一个为空值,默认不选以及可以实现多次选择
         comboBox_name.addItem(null);
@@ -207,7 +217,10 @@ public class Customer_Home extends JFrame {
         //endregion
     }
 
+
+
     private void initComponents() {
+        
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         tabbedPane1 = new JTabbedPane();
         Check = new JPanel();
@@ -245,6 +258,8 @@ public class Customer_Home extends JFrame {
         button3 = new JButton();
         shopping_cart = new JPanel();
         button4 = new JButton();
+        scrollPane2 = new JScrollPane();
+        table1 = new JTable();
         Orders = new JPanel();
         Me = new JPanel();
         Title = new JLabel();
@@ -307,7 +322,20 @@ public class Customer_Home extends JFrame {
                         new String[] {
                             null, null, null, null, null
                         }
-                    ));
+                    ) {
+                        boolean[] columnEditable = new boolean[] {
+                            false, false, false, false, false
+                        };
+                        @Override
+                        public boolean isCellEditable(int rowIndex, int columnIndex) {
+                            return columnEditable[columnIndex];
+                        }
+                    });
+                    {
+                        TableColumnModel cm = FlowerList.getColumnModel();
+                        cm.getColumn(0).setResizable(false);
+                    }
+                    FlowerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                     scrollPane1.setViewportView(FlowerList);
                 }
                 Check.add(scrollPane1);
@@ -499,7 +527,14 @@ public class Customer_Home extends JFrame {
                 //---- button4 ----
                 button4.setText("\u7ed3\u7b97");
                 shopping_cart.add(button4);
-                button4.setBounds(new Rectangle(new Point(345, 415), button4.getPreferredSize()));
+                button4.setBounds(new Rectangle(new Point(560, 445), button4.getPreferredSize()));
+
+                //======== scrollPane2 ========
+                {
+                    scrollPane2.setViewportView(table1);
+                }
+                shopping_cart.add(scrollPane2);
+                scrollPane2.setBounds(0, 0, 690, 260);
 
                 {
                     // compute preferred size

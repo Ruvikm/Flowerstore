@@ -105,18 +105,19 @@ new FormModel {
 								add( null )
 								add( null )
 							}, new java.util.Vector {
-								add( null )
-								add( null )
-								add( null )
-								add( null )
-								add( null )
+								add( false )
+								add( false )
+								add( false )
+								add( false )
+								add( false )
 							}, new java.util.Vector {
-								add( null )
+								add( new com.jformdesigner.model.SwingTableColumn( null, 0, 0, 0, false ) )
 								add( null )
 								add( null )
 								add( null )
 								add( null )
 							} )
+							"selectionMode": 0
 						} )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 						"x": 0
@@ -373,8 +374,19 @@ new FormModel {
 						name: "button4"
 						"text": "结算"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 345
-						"y": 415
+						"x": 560
+						"y": 445
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane2"
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "table1"
+						} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 0
+						"y": 0
+						"width": 690
+						"height": 260
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "购物车"

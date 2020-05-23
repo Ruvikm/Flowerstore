@@ -30,4 +30,8 @@ public class FactoryDAO {
         return new IUser();
     }
 
+    public static IShopList getIShopList(){
+        return new IShopList();
+    }
+
 }
