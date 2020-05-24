@@ -9,6 +9,9 @@ public interface FlowerDAO {
     //根据名字查询鲜花
     public Flower CheckFlowersByName(String Name);
 
+    //根据ID查询鲜花
+    public Flower CheckFlowersByID(int flowerID);
+
     //根据数量查询鲜花
     public List<Flower> CheckFlowersByNum(int Num1,int Num2);
 

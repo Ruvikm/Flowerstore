@@ -2,6 +2,7 @@ package FlowerStore.Realize;
 
 
 import FlowerStore.Entity.User;
+import FlowerStore.Factory.FactoryDAO;
 import FlowerStore.Realize.DAO.IUser;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class TestDAO {
         IFlowers iFlowers = IFlowers.getIFlowers();
         iFlowers.AddFlower(list);*/
 
-        String FlowerName=null;
+       /* String FlowerName=null;
         String FlowerColor="黄色";
         String ShopName=null;
         int LowNum=0;
@@ -83,7 +84,7 @@ public class TestDAO {
                 "                               and(" + "'" + ShopName + "'" + " is null or store_id like  (select store_id from flowerstore where store_name ='" + ShopName + "'" + ")" + ")" +
                 "                               and(" + LowNum + "!= 0 and " + HighNum + "!=0" + " or flower_num >= " + LowNum + " and flower_num <= " + HighNum + ")" +
                 "                               and(" + LowPrice + "!= 0 and " + HighPrice + "!=0" + " or flower_price >=" + LowPrice + " and flower_price <=" + HighPrice + ")";
-        System.out.println(sql);
+        System.out.println(sql);*/
 
         //endregion
 
@@ -222,6 +223,14 @@ public class TestDAO {
         String Name="Ruvikm";
         String sql = "Update user set password = '" + NewPassword + "'" + " where name =" + "''" + Name + "'";
 */
+
+        //endregion
+
+
+        //region IShopList测试
+        //FactoryDAO.getIShopList().DeleteItem(1);
+
+
 
         //endregion
 

@@ -2,6 +2,7 @@ package FlowerStore.Interface.Service;
 
 import FlowerStore.Entity.Customer;
 import FlowerStore.Entity.Flower;
+import FlowerStore.Entity.ShopList;
 import FlowerStore.Entity.User;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface CustomerService {
 
     public Flower CheckFlowersByName(String Name);
 
-    public void Buy();//购买鲜花
+    public int CheckOut(int CustomerID);//购买鲜花
 
     public void CheckMyOrder();//查看订单
 
@@ -27,4 +28,12 @@ public interface CustomerService {
     public boolean C_Regist(User user, Customer customer);
 
     public Object[][] FilterFlowers(String FlowerName,String FlowerColor,String ShopName,int LowNum,int HighNum,int LowPrice,int HighPrice,String head[]);
+
+    public boolean AddToList(List<ShopList> list);//添加到购物车
+
+    public Object[][] CheckMyList(String head[],int CustomerID);
+
+    public boolean DeleteItem(int CustomerID,String flowerName);
+
+
 }

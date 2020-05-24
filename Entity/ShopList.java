@@ -4,6 +4,24 @@ public class ShopList {
     private int shoplist_id;
     private int customer_id;
     private int flower_id;
+    private int buynum;
+    private int allprice;
+
+    public int getAllprice() {
+        return allprice;
+    }
+
+    public void setAllprice(int allprice) {
+        this.allprice = allprice;
+    }
+
+    public int getBuynum() {
+        return buynum;
+    }
+
+    public void setBuynum(int buynum) {
+        this.buynum = buynum;
+    }
 
     public int getShoplist_id() {
         return shoplist_id;

@@ -356,15 +356,17 @@ new FormModel {
 						"y": 240
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "button2"
+						name: "AddToList"
 						"text": "加入购物车"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "AddToListActionPerformed", true ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 						"x": 200
 						"y": 425
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "button3"
+						name: "buyNowButton"
 						"text": "购买"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "buyNowButtonActionPerformed", true ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 						"x": 390
 						"y": 425
@@ -386,22 +388,59 @@ new FormModel {
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
 					name: "shopping_cart"
 					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "button4"
+						name: "checkout"
 						"text": "结算"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "checkoutActionPerformed", true ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 560
+						"x": 520
 						"y": 445
+						"height": 30
+						"width": 100
 					} )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane2"
 						add( new FormComponent( "javax.swing.JTable" ) {
-							name: "table1"
+							name: "shoplist"
+							"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector, new java.util.Vector {
+								add( "名字" )
+								add( "单价" )
+								add( "数量" )
+								add( "总价" )
+							}, new java.util.Vector {
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+							}, new java.util.Vector {
+								add( false )
+								add( false )
+								add( false )
+								add( null )
+							}, new java.util.Vector {
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+							} )
+							"selectionMode": 0
+							"autoCreateRowSorter": true
+							addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "shoplistMouseClicked", true ) )
 						} )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 						"x": 0
 						"y": 0
-						"width": 690
-						"height": 260
+						"width": 680
+						"height": 275
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "tips"
+						"text": "购物车竟然是空的哦~ 再忙，也要记得买点什么犒劳自己~"
+						"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 3, false )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 50
+						"y": 310
+						"width": 395
+						"height": 160
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "购物车"
@@ -593,6 +632,16 @@ new FormModel {
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 5, 0 )
 			"size": new java.awt.Dimension( 780, 560 )
+		} )
+		add( new FormContainer( "javax.swing.JPopupMenu", new FormLayoutManager( class javax.swing.JPopupMenu ) ) {
+			name: "popupMenu1"
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem_delete"
+				"text": "删除当前宝贝"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuItem_deleteActionPerformed", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 110, 570 )
 		} )
 	}
 }

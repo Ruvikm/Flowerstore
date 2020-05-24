@@ -2,6 +2,7 @@ package FlowerStore.Realize.Service;
 
 import FlowerStore.Entity.Customer;
 import FlowerStore.Entity.Flower;
+import FlowerStore.Entity.ShopList;
 import FlowerStore.Entity.User;
 import FlowerStore.Factory.FactoryDAO;
 import FlowerStore.Factory.FactoryService;
@@ -15,20 +16,21 @@ public class ICustomerService implements CustomerService {
     @Override
     public Object[][] CheckAllFlowers(String head[]) {
         //生成表格数据
-            Object [][]data=null;
-            List<Flower> list=FactoryDAO.getIFlowers().CheckAllFlowers();
-            data=new Object[list.size()][head.length];
-
-            for(int i=0;i<list.size();i++){
-                for(int j=0;j<head.length;j++){
-                    data[i][0]=list.get(i).getFlower_name();
-                    data[i][1]=list.get(i).getFlower_price();
-                    data[i][2]=list.get(i).getFlower_num();
-                    data[i][3]=list.get(i).getFlower_color();
-                    data[i][4]=FactoryDAO.getIStore().CheckStoreByID(list.get(i).getStore_id()).getStore_name();
+        Object[][] data = null;
+        List<Flower> list = FactoryDAO.getIFlowers().CheckAllFlowers();
+        if (list.size()!=0) {
+            data = new Object[list.size()][head.length];
+            for (int i = 0; i < list.size(); i++) {
+                for (int j = 0; j < head.length; j++) {
+                    data[i][0] = list.get(i).getFlower_name();
+                    data[i][1] = list.get(i).getFlower_price();
+                    data[i][2] = list.get(i).getFlower_num();
+                    data[i][3] = list.get(i).getFlower_color();
+                    data[i][4] = FactoryDAO.getIStore().CheckStoreByID(list.get(i).getStore_id()).getStore_name();
                 }
             }
-            return data;
+        }
+        return data;
     }
 
     @Override
@@ -70,7 +72,18 @@ public class ICustomerService implements CustomerService {
     }
 
     @Override
-    public void Buy() {
+    public int CheckOut(int CustomerID) {
+
+        int sum = 0;
+        List<ShopList> list = FactoryDAO.getIShopList().CheckAllList(CustomerID);
+        if (list != null) {
+            for (ShopList s : list) {
+                sum += s.getAllprice();
+                //删除购物车里的全部物品
+                FactoryDAO.getIShopList().DeleteItem(s.getShoplist_id());
+            }
+        }
+        return sum;
 
     }
 
@@ -103,4 +116,43 @@ public class ICustomerService implements CustomerService {
         return false;
     }
 
+    @Override
+    public boolean AddToList(List<ShopList> list) {
+        return FactoryDAO.getIShopList().AddItem(list);
+    }
+
+    @Override
+    public Object[][] CheckMyList(String[] head,int CustomerID) {
+
+        //生成表格数据
+        Object [][]data=null;
+        List<ShopList> list=FactoryDAO.getIShopList().CheckAllList(CustomerID);
+        data=new Object[list.size()][head.length];
+        for(int i=0;i<list.size();i++){
+            String name=FactoryDAO.getIFlowers().CheckFlowersByID(list.get(i).getFlower_id()).getFlower_name();
+            int price=FactoryDAO.getIFlowers().CheckFlowersByID(list.get(i).getFlower_id()).getFlower_price();
+            for(int j=0;j<head.length;j++){
+                data[i][0]=name;
+                data[i][1]=price;
+                data[i][2]=list.get(i).getBuynum();
+                data[i][3]=list.get(i).getBuynum()*price;
+            }
+        }
+        return data;
+    }
+
+    @Override
+    public boolean DeleteItem(int CustomerID, String flowerName) {
+
+        List<ShopList> list=FactoryDAO.getIShopList().CheckAllList(CustomerID);
+        for(ShopList s : list){
+            String name=FactoryDAO.getIFlowers().CheckFlowersByID(s.getFlower_id()).getFlower_name();
+            if(name.equals(flowerName))
+            {
+                FactoryDAO.getIShopList().DeleteItem(s.getShoplist_id());
+                return true;
+            }
+        }
+        return false;
+    }
 }

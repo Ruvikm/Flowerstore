@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import javax.swing.table.*;
 import FlowerStore.Entity.Customer;
 import FlowerStore.Entity.Flower;
+import FlowerStore.Entity.ShopList;
 import FlowerStore.Factory.FactoryDAO;
 import FlowerStore.Factory.FactoryService;
 
@@ -32,7 +33,8 @@ public class Customer_Home extends JFrame {
     private int CustomerID;
     List<Flower> list=new ArrayList<>();//存储所有花的列表
     DefaultTableModel tableModel=new DefaultTableModel();//表格的数据源
-    private String head[]=new String[] {"名字", "价格","数量", "颜色", "有货商店"};//表格的表头
+    private String head[]=new String[] {"名字", "价格","数量", "颜色", "有货商店"};//花的表头
+    private String ListHead[]=new String[] {"名字", "单价","数量", "总价"};//购物车的表头
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JTabbedPane tabbedPane1;
     private JPanel Check;
@@ -66,13 +68,14 @@ public class Customer_Home extends JFrame {
     private JTextField buy_numtext;
     private JLabel label16;
     private JLabel pricelabel;
-    private JButton button2;
-    private JButton button3;
+    private JButton AddToList;
+    private JButton buyNowButton;
     private JComboBox Buy_comboBox;
     private JPanel shopping_cart;
-    private JButton button4;
+    private JButton checkout;
     private JScrollPane scrollPane2;
-    private JTable table1;
+    private JTable shoplist;
+    private JLabel tips;
     private JPanel Orders;
     private JPanel Me;
     private JLabel Title;
@@ -94,15 +97,18 @@ public class Customer_Home extends JFrame {
     private JPasswordField new_password;
     private JButton SavePass;
     private JLabel label2;
+    private JPopupMenu popupMenu1;
+    private JMenuItem menuItem_delete;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     public Customer_Home(){
         initComponents();
     }
-    private void thisWindowOpened(WindowEvent e) {
-        // TODO add your code here
-        InitData();
 
+    //判断字符串是否为纯数字
+    public static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(str).matches();
     }
 
     private void SaveInformationActionPerformed(ActionEvent e) {
@@ -121,9 +127,11 @@ public class Customer_Home extends JFrame {
             JOptionPane.showMessageDialog(null, "修改成功！");
     }
 
-    public static boolean isInteger(String str) {
-        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
-        return pattern.matcher(str).matches();
+    private void thisWindowOpened(WindowEvent e) {
+        // TODO add your code here
+        InitData();
+        InitShopList();
+
     }
 
     private void SavePassActionPerformed(ActionEvent e) {
@@ -143,6 +151,10 @@ public class Customer_Home extends JFrame {
 
     private void buttonchooseActionPerformed(ActionEvent e) {
         // TODO add your code here
+        boolean LowNumFlag = true;
+        boolean HighNumFlag = true;
+        boolean LowPriceFlag = true;
+        boolean HighPriceFlag = true;
         String flowerName = null;
         String color = null;
         String ShopName = null;
@@ -151,29 +163,41 @@ public class Customer_Home extends JFrame {
         int LowPrice = -1;
         int HighPrice = -1;
         if (!price1.getText().equals("")) {
-            if (isInteger(price1.getText()))
+            if (isInteger(price1.getText())) {
+                LowPriceFlag = true;
                 LowPrice = Integer.parseInt(price1.getText());
-            else
+            } else {
                 JOptionPane.showMessageDialog(null, "最低价格应为大于0的整数！");
+                LowPriceFlag = false;
+            }
         }
 
         if (!price2.getText().equals("")) {
-            if (isInteger(price2.getText()))
+            if (isInteger(price2.getText())) {
+                HighPriceFlag = true;
                 HighPrice = Integer.parseInt(price2.getText());
-            else
+            } else {
+                HighPriceFlag = false;
                 JOptionPane.showMessageDialog(null, "最高价格应为大于0的整数！");
+            }
         }
         if (!num1.getText().equals("")) {
-            if (isInteger(num1.getText()))
+            if (isInteger(num1.getText())) {
+                LowNumFlag = true;
                 LowNum = Integer.parseInt(num1.getText());
-            else
+            } else {
+                LowNumFlag = false;
                 JOptionPane.showMessageDialog(null, "最低库存应为大于0的整数！");
+            }
         }
         if (!num2.getText().equals("")) {
-            if (isInteger(num2.getText()))
+            if (isInteger(num2.getText())) {
+                HighNumFlag = true;
                 HighNum = Integer.parseInt(num2.getText());
-            else
+            } else {
+                HighNumFlag = false;
                 JOptionPane.showMessageDialog(null, "最高库存应为大于0的整数！");
+            }
         }
         if (comboBox_name.getSelectedItem() != null) {
             flowerName = (String) comboBox_name.getSelectedItem();
@@ -184,17 +208,22 @@ public class Customer_Home extends JFrame {
         if (comboBox_shop.getSelectedItem() != null) {
             ShopName = (String) comboBox_shop.getSelectedItem();
         }
-
-        tableModel.getDataVector().clear();
-        tableModel = new DefaultTableModel(FactoryService.getiCustomerService().FilterFlowers(flowerName, color, ShopName, LowNum, HighNum, LowPrice, HighPrice, head), head) {
-            //使不可编辑
-            public boolean isCellEditable(int row, int column) {
-                return false;
+        if (LowNumFlag && LowPriceFlag && HighNumFlag && HighPriceFlag) {
+            tableModel.getDataVector().clear();
+            tableModel = new DefaultTableModel(FactoryService.getiCustomerService().FilterFlowers(flowerName, color, ShopName, LowNum, HighNum, LowPrice, HighPrice, head), head) {
+                //使不可编辑
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            if (FactoryService.getiCustomerService().FilterFlowers(flowerName, color, ShopName, LowNum, HighNum, LowPrice, HighPrice, head).length != 0) {
+                FlowerList.setModel(tableModel);//填充Jtable
+                Check.revalidate();
+                scrollPane1.validate();
             }
-        };
-        FlowerList.setModel(tableModel);//填充Jtable
-        Check.revalidate();
-        scrollPane1.validate();
+            else
+                JOptionPane.showMessageDialog(null, "找不到结果！");
+        }
 
         //System.out.println(name+color+ShopName);
 
@@ -249,6 +278,29 @@ public class Customer_Home extends JFrame {
         //endregion
     }
 
+    private void InitShopList() {
+        tableModel = new DefaultTableModel(FactoryService.getiCustomerService().CheckMyList(ListHead, CustomerID), ListHead) {
+            //使不可编辑
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        if (FactoryService.getiCustomerService().CheckMyList(ListHead, CustomerID).length!=0) {
+            shoplist.setModel(tableModel);//填充Jtable
+            shoplist.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            shoplist.setVisible(true);
+            checkout.setText("结算");
+            tips.setText("右键购物车内容可以删除哦~");
+        } else {
+            shoplist.setVisible(false);
+            tips.setVisible(true);
+            tips.setText("购物车竟然是空的哦~ 再忙，也要记得买点什么犒劳自己~");
+            String s="买买买！";
+            checkout.setText(s);
+        }
+
+    }
+
     private void Buy_comboBoxItemStateChanged(ItemEvent e) {
         // TODO add your code here
         String ChooseName = null;
@@ -266,6 +318,8 @@ public class Customer_Home extends JFrame {
             {
                 String clickName = (String) FlowerList.getValueAt(FlowerList.getSelectedRow(),0); //获取所选中的行的第一个位置的内容，当然你也可以指定具体的该行第几格
                 tabbedPane1.setSelectedIndex(1);
+                Buy_comboBox.setSelectedItem(clickName);//预先选择comboBox里的选择
+                buy_numtext.setText("");
                 initBuyJPanel(clickName);
             }
         }
@@ -292,6 +346,86 @@ public class Customer_Home extends JFrame {
         }
     }
 
+    private void AddToListActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        int BuyNum = 0;
+        String ChooseName = null;
+        Flower flower = new Flower();
+        if (Buy_comboBox.getSelectedItem() != null) {
+            flower = FactoryService.getiCustomerService().CheckFlowersByName((String) Buy_comboBox.getSelectedItem());
+        } //获取被选中的项
+        if (!buy_numtext.getText().equals("")) {
+            if (isInteger(buy_numtext.getText()) && Integer.parseInt(buy_numtext.getText()) > 0) {
+                BuyNum = Integer.parseInt(buy_numtext.getText());
+                List<ShopList> list = new ArrayList<>();
+                ShopList item = new ShopList();
+                item.setCustomer_id(CustomerID);
+                item.setFlower_id(flower.getFlower_id());
+                item.setBuynum(BuyNum);
+                item.setAllprice(BuyNum * flower.getFlower_price());
+                list.add(item);
+                //System.out.println(BuyNum + flower.getFlower_name());
+                if (FactoryService.getiCustomerService().AddToList(list)) {
+                    JOptionPane.showMessageDialog(null, "成功添加到购物车！");
+                    InitShopList();
+                } else
+                    JOptionPane.showMessageDialog(null, "添加到购物车失败！");
+            } else
+                JOptionPane.showMessageDialog(null, "应为大于0的整数！");
+        }
+        else
+            JOptionPane.showMessageDialog(null, "请输入购买数量！");
+
+    }
+
+    private void shoplistMouseClicked(MouseEvent e) {
+        // TODO add your code here
+        if(e.getButton()==MouseEvent.BUTTON3)
+        {
+            //判断是右键点击并弹出菜单
+            popupMenu1.show(e.getComponent(), e.getX(), e.getY());
+        }
+
+
+    }
+
+    private void menuItem_deleteActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        String deleteName = (String) shoplist.getValueAt(shoplist.getSelectedRow(),0);
+        if(FactoryService.getiCustomerService().DeleteItem(CustomerID,deleteName))
+            JOptionPane.showMessageDialog(null, "删除成功！");
+        else
+            JOptionPane.showMessageDialog(null, "删除失败！");
+        InitShopList();//刷新
+
+    }
+
+    private void checkoutActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        int AllPrice = FactoryService.getiCustomerService().CheckOut(CustomerID);
+        if (AllPrice != 0) {
+            JOptionPane.showMessageDialog(null, "请支付" + AllPrice + "元！");
+            InitShopList();
+        } else
+            JOptionPane.showMessageDialog(null, "购物车里无商品！");
+    }
+
+    private void buyNowButtonActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        String ChooseName = null;
+        if (Buy_comboBox.getSelectedItem() != null) {
+            ChooseName = (String) Buy_comboBox.getSelectedItem();
+        } //获取被选中的项
+        Flower flower = FactoryService.getiCustomerService().CheckFlowersByName(ChooseName);
+        if (!buy_numtext.getText().equals("")) {
+            if (isInteger(buy_numtext.getText()) && Integer.parseInt(buy_numtext.getText()) > 0) {
+                int Sum = Integer.parseInt(buy_numtext.getText()) * flower.getFlower_price();
+                JOptionPane.showMessageDialog(null, "请支付" + Sum + "元！");
+            } else
+                JOptionPane.showMessageDialog(null, "应为大于0的整数！");
+        } else
+            JOptionPane.showMessageDialog(null, "请输入购买数量！");
+    }
 
     private void initComponents() {
         
@@ -328,13 +462,14 @@ public class Customer_Home extends JFrame {
         buy_numtext = new JTextField();
         label16 = new JLabel();
         pricelabel = new JLabel();
-        button2 = new JButton();
-        button3 = new JButton();
+        AddToList = new JButton();
+        buyNowButton = new JButton();
         Buy_comboBox = new JComboBox();
         shopping_cart = new JPanel();
-        button4 = new JButton();
+        checkout = new JButton();
         scrollPane2 = new JScrollPane();
-        table1 = new JTable();
+        shoplist = new JTable();
+        tips = new JLabel();
         Orders = new JPanel();
         Me = new JPanel();
         Title = new JLabel();
@@ -356,6 +491,8 @@ public class Customer_Home extends JFrame {
         new_password = new JPasswordField();
         SavePass = new JButton();
         label2 = new JLabel();
+        popupMenu1 = new JPopupMenu();
+        menuItem_delete = new JMenuItem();
 
         //======== this ========
         setIconImage(null);
@@ -574,15 +711,17 @@ public class Customer_Home extends JFrame {
                 Buy.add(pricelabel);
                 pricelabel.setBounds(new Rectangle(new Point(515, 240), pricelabel.getPreferredSize()));
 
-                //---- button2 ----
-                button2.setText("\u52a0\u5165\u8d2d\u7269\u8f66");
-                Buy.add(button2);
-                button2.setBounds(new Rectangle(new Point(200, 425), button2.getPreferredSize()));
+                //---- AddToList ----
+                AddToList.setText("\u52a0\u5165\u8d2d\u7269\u8f66");
+                AddToList.addActionListener(e -> AddToListActionPerformed(e));
+                Buy.add(AddToList);
+                AddToList.setBounds(new Rectangle(new Point(200, 425), AddToList.getPreferredSize()));
 
-                //---- button3 ----
-                button3.setText("\u8d2d\u4e70");
-                Buy.add(button3);
-                button3.setBounds(390, 425, 94, button3.getPreferredSize().height);
+                //---- buyNowButton ----
+                buyNowButton.setText("\u8d2d\u4e70");
+                buyNowButton.addActionListener(e -> buyNowButtonActionPerformed(e));
+                Buy.add(buyNowButton);
+                buyNowButton.setBounds(390, 425, 94, buyNowButton.getPreferredSize().height);
 
                 //---- Buy_comboBox ----
                 Buy_comboBox.setSelectedIndex(-1);
@@ -611,17 +750,49 @@ public class Customer_Home extends JFrame {
             {
                 shopping_cart.setLayout(null);
 
-                //---- button4 ----
-                button4.setText("\u7ed3\u7b97");
-                shopping_cart.add(button4);
-                button4.setBounds(new Rectangle(new Point(560, 445), button4.getPreferredSize()));
+                //---- checkout ----
+                checkout.setText("\u7ed3\u7b97");
+                checkout.addActionListener(e -> checkoutActionPerformed(e));
+                shopping_cart.add(checkout);
+                checkout.setBounds(520, 445, 100, 30);
 
                 //======== scrollPane2 ========
                 {
-                    scrollPane2.setViewportView(table1);
+
+                    //---- shoplist ----
+                    shoplist.setModel(new DefaultTableModel(
+                        new Object[][] {
+                        },
+                        new String[] {
+                            "\u540d\u5b57", "\u5355\u4ef7", "\u6570\u91cf", "\u603b\u4ef7"
+                        }
+                    ) {
+                        boolean[] columnEditable = new boolean[] {
+                            false, false, false, true
+                        };
+                        @Override
+                        public boolean isCellEditable(int rowIndex, int columnIndex) {
+                            return columnEditable[columnIndex];
+                        }
+                    });
+                    shoplist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                    shoplist.setAutoCreateRowSorter(true);
+                    shoplist.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            shoplistMouseClicked(e);
+                        }
+                    });
+                    scrollPane2.setViewportView(shoplist);
                 }
                 shopping_cart.add(scrollPane2);
-                scrollPane2.setBounds(0, 0, 690, 260);
+                scrollPane2.setBounds(0, 0, 680, 275);
+
+                //---- tips ----
+                tips.setText("\u8d2d\u7269\u8f66\u7adf\u7136\u662f\u7a7a\u7684\u54e6~ \u518d\u5fd9\uff0c\u4e5f\u8981\u8bb0\u5f97\u4e70\u70b9\u4ec0\u4e48\u7292\u52b3\u81ea\u5df1~");
+                tips.setFont(tips.getFont().deriveFont(tips.getFont().getSize() + 3f));
+                shopping_cart.add(tips);
+                tips.setBounds(50, 310, 395, 160);
 
                 {
                     // compute preferred size
@@ -786,6 +957,15 @@ public class Customer_Home extends JFrame {
         contentPane.setPreferredSize(new Dimension(780, 560));
         setSize(780, 560);
         setLocationRelativeTo(null);
+
+        //======== popupMenu1 ========
+        {
+
+            //---- menuItem_delete ----
+            menuItem_delete.setText("\u5220\u9664\u5f53\u524d\u5b9d\u8d1d");
+            menuItem_delete.addActionListener(e -> menuItem_deleteActionPerformed(e));
+            popupMenu1.add(menuItem_delete);
+        }
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 }

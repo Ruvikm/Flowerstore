@@ -11,6 +11,37 @@ import java.util.List;
 public class IFlowers implements FlowerDAO {
 
     @Override
+    public Flower CheckFlowersByID(int flowerID) {
+
+        Connection conn = null;
+        ResultSet rs = null;
+        Statement st = null;
+        conn = DBUtil.getConnection();
+
+        Flower flower = new Flower();
+        try {
+            String sql = "select * from flower where flower_id="+flowerID;
+            st = conn.createStatement();
+            rs = st.executeQuery(sql);
+
+            rs.next();
+            flower.setFlower_id(rs.getInt(1));
+            flower.setFlower_name(rs.getString(2));
+            flower.setFlower_num(rs.getInt(3));
+            flower.setFlower_price(rs.getInt(4));
+            flower.setFlower_color(rs.getString(5));
+            flower.setStore_id(rs.getInt(6));
+            return flower;
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        } finally {
+            DBUtil.close(conn, st, null, rs);
+        }
+        return null;
+    }
+
+    @Override
     public Flower CheckFlowersByName(String Name) {
 
         Connection conn = null;
