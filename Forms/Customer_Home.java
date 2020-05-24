@@ -4,6 +4,8 @@
 
 package FlowerStore.Forms;
 
+import java.beans.*;
+import javax.imageio.ImageIO;
 import javax.swing.table.*;
 import FlowerStore.Entity.Customer;
 import FlowerStore.Entity.Flower;
@@ -12,8 +14,11 @@ import FlowerStore.Factory.FactoryService;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.UIManager;
 
@@ -25,9 +30,9 @@ public class Customer_Home extends JFrame {
     private String name;
     private Customer customer=new Customer();
     private int CustomerID;
-    List<Flower> list=new ArrayList<>();
-    DefaultTableModel tableModel=new DefaultTableModel();
-    private String head[]=new String[] {"名字", "价格","数量", "颜色", "有货商店"};
+    List<Flower> list=new ArrayList<>();//存储所有花的列表
+    DefaultTableModel tableModel=new DefaultTableModel();//表格的数据源
+    private String head[]=new String[] {"名字", "价格","数量", "颜色", "有货商店"};//表格的表头
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JTabbedPane tabbedPane1;
     private JPanel Check;
@@ -50,19 +55,20 @@ public class Customer_Home extends JFrame {
     private JComboBox comboBox_shop;
     private JButton buttonchoose;
     private JPanel Buy;
-    private JLabel label1;
+    private JLabel picturelabel;
     private JLabel label9;
     private JLabel label10;
     private JLabel label11;
-    private JLabel label12;
-    private JLabel label13;
-    private JLabel label14;
+    private JLabel namelabel;
+    private JLabel colorlabel;
+    private JLabel Numlabel;
     private JLabel label15;
     private JTextField buy_numtext;
     private JLabel label16;
-    private JLabel label17;
+    private JLabel pricelabel;
     private JButton button2;
     private JButton button3;
+    private JComboBox Buy_comboBox;
     private JPanel shopping_cart;
     private JButton button4;
     private JScrollPane scrollPane2;
@@ -115,6 +121,11 @@ public class Customer_Home extends JFrame {
             JOptionPane.showMessageDialog(null, "修改成功！");
     }
 
+    public static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(str).matches();
+    }
+
     private void SavePassActionPerformed(ActionEvent e) {
         // TODO add your code here
         customer=FactoryDAO.getICustomer().getCustomerbyId(CustomerID);
@@ -135,36 +146,56 @@ public class Customer_Home extends JFrame {
         String flowerName = null;
         String color = null;
         String ShopName = null;
-        int LowNum=-1;
-        int HighNum=-1;
-        int LowPrice=-1;
-        int HighPrice=-1;
-        if(!price1.getText().equals(""))
-            LowPrice=Integer.parseInt(price1.getText());
-        if(!price2.getText().equals(""))
-            HighPrice=Integer.parseInt(price2.getText());
-        if(!num1.getText().equals(""))
-            LowNum=Integer.parseInt(num1.getText());
-        if(!num2.getText().equals(""))
-            HighNum=Integer.parseInt(num2.getText());
+        int LowNum = -1;
+        int HighNum = -1;
+        int LowPrice = -1;
+        int HighPrice = -1;
+        if (!price1.getText().equals("")) {
+            if (isInteger(price1.getText()))
+                LowPrice = Integer.parseInt(price1.getText());
+            else
+                JOptionPane.showMessageDialog(null, "最低价格应为大于0的整数！");
+        }
+
+        if (!price2.getText().equals("")) {
+            if (isInteger(price2.getText()))
+                HighPrice = Integer.parseInt(price2.getText());
+            else
+                JOptionPane.showMessageDialog(null, "最高价格应为大于0的整数！");
+        }
+        if (!num1.getText().equals("")) {
+            if (isInteger(num1.getText()))
+                LowNum = Integer.parseInt(num1.getText());
+            else
+                JOptionPane.showMessageDialog(null, "最低库存应为大于0的整数！");
+        }
+        if (!num2.getText().equals("")) {
+            if (isInteger(num2.getText()))
+                HighNum = Integer.parseInt(num2.getText());
+            else
+                JOptionPane.showMessageDialog(null, "最高库存应为大于0的整数！");
+        }
         if (comboBox_name.getSelectedItem() != null) {
             flowerName = (String) comboBox_name.getSelectedItem();
         } //获取被选中的项
         if (comboBox_color.getSelectedItem() != null) {
             color = (String) comboBox_color.getSelectedItem();
-            System.out.println(color);
         }
         if (comboBox_shop.getSelectedItem() != null) {
             ShopName = (String) comboBox_shop.getSelectedItem();
         }
 
         tableModel.getDataVector().clear();
-        tableModel=new DefaultTableModel(FactoryService.getiCustomerService().FilterFlowers(flowerName,color,ShopName,LowNum,HighNum,LowPrice,HighPrice,head),head);
+        tableModel = new DefaultTableModel(FactoryService.getiCustomerService().FilterFlowers(flowerName, color, ShopName, LowNum, HighNum, LowPrice, HighPrice, head), head) {
+            //使不可编辑
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         FlowerList.setModel(tableModel);//填充Jtable
         Check.revalidate();
         scrollPane1.validate();
 
-        
         //System.out.println(name+color+ShopName);
 
     }
@@ -203,6 +234,7 @@ public class Customer_Home extends JFrame {
         //填充名字(名字不会出现重复)
         for(Flower v:list){
             comboBox_name.addItem(v.getFlower_name());
+            Buy_comboBox.addItem(v.getFlower_name());
         }
         //填充颜色
         List<String> ColorList=FactoryDAO.getIFlowers().checkAllColors();
@@ -217,6 +249,48 @@ public class Customer_Home extends JFrame {
         //endregion
     }
 
+    private void Buy_comboBoxItemStateChanged(ItemEvent e) {
+        // TODO add your code here
+        String ChooseName = null;
+        if (Buy_comboBox.getSelectedItem() != null) {
+            ChooseName = (String) Buy_comboBox.getSelectedItem();
+        } //获取被选中的项
+        initBuyJPanel(ChooseName);
+
+    }
+
+    private void FlowerListMouseClicked(MouseEvent e) {
+        // TODO add your code here
+        if (e.getClickCount() == 2) {
+            if(FlowerList.getValueAt(FlowerList.getSelectedRow(),0)!=null)
+            {
+                String clickName = (String) FlowerList.getValueAt(FlowerList.getSelectedRow(),0); //获取所选中的行的第一个位置的内容，当然你也可以指定具体的该行第几格
+                tabbedPane1.setSelectedIndex(1);
+                initBuyJPanel(clickName);
+            }
+        }
+
+    }
+
+    private void initBuyJPanel(String clickName){
+        Flower flower = FactoryService.getiCustomerService().CheckFlowersByName(clickName);
+        //给label赋值
+        namelabel.setText(flower.getFlower_name());
+        colorlabel.setText(flower.getFlower_color());
+        Numlabel.setText(String.valueOf(flower.getFlower_num()));
+        pricelabel.setText(String.valueOf(flower.getFlower_price()));
+        //更换图片
+        //System.out.println("E:\\college\\code\\Java\\src\\FlowerStore\\img\\flowers\\"+flower.getFlower_name()+".png");
+        ImageIcon image = null;
+        try {
+            //图片自适应大小填充
+            image = new ImageIcon(ImageIO.read(new File("E:\\college\\code\\Java\\src\\FlowerStore\\img\\flowers\\"+flower.getFlower_name()+".png")));
+            image.setImage(image.getImage().getScaledInstance(280, 280,Image.SCALE_DEFAULT ));
+            picturelabel .setIcon(image);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
 
 
     private void initComponents() {
@@ -243,19 +317,20 @@ public class Customer_Home extends JFrame {
         comboBox_shop = new JComboBox();
         buttonchoose = new JButton();
         Buy = new JPanel();
-        label1 = new JLabel();
+        picturelabel = new JLabel();
         label9 = new JLabel();
         label10 = new JLabel();
         label11 = new JLabel();
-        label12 = new JLabel();
-        label13 = new JLabel();
-        label14 = new JLabel();
+        namelabel = new JLabel();
+        colorlabel = new JLabel();
+        Numlabel = new JLabel();
         label15 = new JLabel();
         buy_numtext = new JTextField();
         label16 = new JLabel();
-        label17 = new JLabel();
+        pricelabel = new JLabel();
         button2 = new JButton();
         button3 = new JButton();
+        Buy_comboBox = new JComboBox();
         shopping_cart = new JPanel();
         button4 = new JButton();
         scrollPane2 = new JScrollPane();
@@ -336,6 +411,12 @@ public class Customer_Home extends JFrame {
                         cm.getColumn(0).setResizable(false);
                     }
                     FlowerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                    FlowerList.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            FlowerListMouseClicked(e);
+                        }
+                    });
                     scrollPane1.setViewportView(FlowerList);
                 }
                 Check.add(scrollPane1);
@@ -440,68 +521,74 @@ public class Customer_Home extends JFrame {
             {
                 Buy.setLayout(null);
 
-                //---- label1 ----
-                label1.setIcon(new ImageIcon(getClass().getResource("/FlowerStore/img/flowers/\u90c1\u91d1\u9999.png")));
-                Buy.add(label1);
-                label1.setBounds(20, 5, 220, 220);
+                //---- picturelabel ----
+                picturelabel.setIcon(new ImageIcon(getClass().getResource("/FlowerStore/img/flowers/\u73ab\u7470.png")));
+                Buy.add(picturelabel);
+                picturelabel.setBounds(80, 15, 280, 280);
 
                 //---- label9 ----
                 label9.setText("\u989c\u8272\uff1a");
                 Buy.add(label9);
-                label9.setBounds(new Rectangle(new Point(290, 100), label9.getPreferredSize()));
+                label9.setBounds(new Rectangle(new Point(465, 140), label9.getPreferredSize()));
 
                 //---- label10 ----
                 label10.setText("\u5e93\u5b58\uff1a");
                 Buy.add(label10);
-                label10.setBounds(new Rectangle(new Point(290, 150), label10.getPreferredSize()));
+                label10.setBounds(new Rectangle(new Point(465, 190), label10.getPreferredSize()));
 
                 //---- label11 ----
                 label11.setText("\u540d\u5b57\uff1a");
                 Buy.add(label11);
-                label11.setBounds(new Rectangle(new Point(290, 50), label11.getPreferredSize()));
+                label11.setBounds(new Rectangle(new Point(465, 90), label11.getPreferredSize()));
 
-                //---- label12 ----
-                label12.setText("\u90c1\u91d1\u9999");
-                Buy.add(label12);
-                label12.setBounds(new Rectangle(new Point(340, 50), label12.getPreferredSize()));
+                //---- namelabel ----
+                namelabel.setText("\u90c1\u91d1\u9999");
+                Buy.add(namelabel);
+                namelabel.setBounds(new Rectangle(new Point(515, 90), namelabel.getPreferredSize()));
 
-                //---- label13 ----
-                label13.setText("\u7c89\u7ea2\u8272");
-                Buy.add(label13);
-                label13.setBounds(new Rectangle(new Point(340, 100), label13.getPreferredSize()));
+                //---- colorlabel ----
+                colorlabel.setText("\u7c89\u7ea2\u8272");
+                Buy.add(colorlabel);
+                colorlabel.setBounds(515, 140, 60, colorlabel.getPreferredSize().height);
 
-                //---- label14 ----
-                label14.setText("160");
-                Buy.add(label14);
-                label14.setBounds(new Rectangle(new Point(340, 150), label14.getPreferredSize()));
+                //---- Numlabel ----
+                Numlabel.setText("160");
+                Buy.add(Numlabel);
+                Numlabel.setBounds(new Rectangle(new Point(515, 190), Numlabel.getPreferredSize()));
 
                 //---- label15 ----
                 label15.setText("\u8d2d\u4e70\u6570\u91cf");
                 label15.setLabelFor(buy_numtext);
                 Buy.add(label15);
-                label15.setBounds(new Rectangle(new Point(60, 310), label15.getPreferredSize()));
+                label15.setBounds(new Rectangle(new Point(80, 347), label15.getPreferredSize()));
                 Buy.add(buy_numtext);
-                buy_numtext.setBounds(150, 305, 60, buy_numtext.getPreferredSize().height);
+                buy_numtext.setBounds(151, 340, 60, 30);
 
                 //---- label16 ----
                 label16.setText("\u5355\u4ef7\uff1a");
                 Buy.add(label16);
-                label16.setBounds(new Rectangle(new Point(290, 200), label16.getPreferredSize()));
+                label16.setBounds(new Rectangle(new Point(465, 240), label16.getPreferredSize()));
 
-                //---- label17 ----
-                label17.setText("4\u5143");
-                Buy.add(label17);
-                label17.setBounds(new Rectangle(new Point(340, 200), label17.getPreferredSize()));
+                //---- pricelabel ----
+                pricelabel.setText("4\u5143");
+                Buy.add(pricelabel);
+                pricelabel.setBounds(new Rectangle(new Point(515, 240), pricelabel.getPreferredSize()));
 
                 //---- button2 ----
                 button2.setText("\u52a0\u5165\u8d2d\u7269\u8f66");
                 Buy.add(button2);
-                button2.setBounds(new Rectangle(new Point(100, 410), button2.getPreferredSize()));
+                button2.setBounds(new Rectangle(new Point(200, 425), button2.getPreferredSize()));
 
                 //---- button3 ----
                 button3.setText("\u8d2d\u4e70");
                 Buy.add(button3);
-                button3.setBounds(new Rectangle(new Point(290, 410), button3.getPreferredSize()));
+                button3.setBounds(390, 425, 94, button3.getPreferredSize().height);
+
+                //---- Buy_comboBox ----
+                Buy_comboBox.setSelectedIndex(-1);
+                Buy_comboBox.addItemListener(e -> Buy_comboBoxItemStateChanged(e));
+                Buy.add(Buy_comboBox);
+                Buy_comboBox.setBounds(234, 340, 80, 30);
 
                 {
                     // compute preferred size
@@ -690,6 +777,8 @@ public class Customer_Home extends JFrame {
                 }
             }
             tabbedPane1.addTab("\u5173\u4e8e\u6211", Me);
+
+            tabbedPane1.setSelectedIndex(0);
         }
         contentPane.add(tabbedPane1);
         tabbedPane1.setBounds(0, 5, 765, 510);
