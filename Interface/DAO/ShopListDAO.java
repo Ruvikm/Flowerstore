@@ -12,4 +12,8 @@ public interface ShopListDAO {
     public boolean DeleteItem(int ListID);
 
     public boolean AddItem(List<ShopList> list);
+
+    public boolean SetItemNum(int ShopListID,int Num);
+
+    public int getShopListID(int CustomerID,int FlowerID);
 }

@@ -156,6 +156,15 @@ public class ICustomerService implements CustomerService {
 
     @Override
     public boolean AddToList(List<ShopList> list) {
+
+        for(ShopList item : list){
+            //如果购物车已有就直接在上面加上购买数量
+            if(FactoryDAO.getIShopList().getShopListID(item.getCustomer_id(),item.getFlower_id())!=-1){
+                return FactoryDAO.getIShopList().SetItemNum(FactoryDAO.getIShopList().getShopListID(item.getCustomer_id(),item.getFlower_id()),item.getBuynum());
+
+            }
+        }
+        //没有则新建一项
         return FactoryDAO.getIShopList().AddItem(list);
     }
 

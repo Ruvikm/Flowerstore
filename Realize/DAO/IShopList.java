@@ -89,4 +89,51 @@ public class IShopList implements ShopListDAO {
         }
         return false;
     }
+
+    @Override
+    public boolean SetItemNum(int ShopListID, int Num) {
+
+        Connection conn = null;
+        Statement st = null;
+        conn = DBUtil.getConnection();
+        try {
+            String sql = "Update shoplist set buynum = buynum +" + Num + " where shoplist_id= " + ShopListID;
+            st = conn.createStatement();
+            st.execute(sql);
+            return true;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        } finally {
+            DBUtil.close(conn, st, null, null);
+        }
+        return false;
+    }
+
+    @Override
+    public int getShopListID(int CustomerID, int FlowerID) {
+        Connection conn = null;
+        ResultSet rs = null;
+        Statement st = null;
+        conn = DBUtil.getConnection();
+        try {
+            String sql = "select * from shoplist where customer_id=" + CustomerID + " and flower_id=" + FlowerID;
+            st = conn.createStatement();
+            rs = st.executeQuery(sql);
+            if (rs.next()) {
+                ShopList shopList = new ShopList();
+                shopList.setShoplist_id(rs.getInt(1));
+                shopList.setCustomer_id(rs.getInt(2));
+                shopList.setFlower_id(rs.getInt(3));
+                shopList.setBuynum(rs.getInt(4));
+                shopList.setAllprice(rs.getInt(5));
+                return shopList.getShoplist_id();
+            }
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        } finally {
+            DBUtil.close(conn, st, null, rs);
+        }
+        return -1;
+    }
 }
