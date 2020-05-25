@@ -36,6 +36,8 @@ public interface FlowerDAO {
     //查询所有颜色
     public List<String> checkAllColors();
 
+    public List<String> checkAllColorsByStoreID(int StoreID);
+
     //查询所有店铺ID
     public List<Integer> checkAllShops();
 

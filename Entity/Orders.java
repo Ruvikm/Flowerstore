@@ -6,6 +6,15 @@ public class Orders {
     private int quantity;
     private int customer_id;
     private String date;
+    private int store_id;
+
+    public int getStore_id() {
+        return store_id;
+    }
+
+    public void setStore_id(int store_id) {
+        this.store_id = store_id;
+    }
 
     public int getOrders_id() {
         return orders_id;

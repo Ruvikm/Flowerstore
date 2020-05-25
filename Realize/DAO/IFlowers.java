@@ -297,6 +297,34 @@ public class IFlowers implements FlowerDAO {
     }
 
     @Override
+    public List<String> checkAllColorsByStoreID(int StoreID) {
+        Connection conn = null;
+        ResultSet rs = null;
+        Statement st = null;
+        conn = DBUtil.getConnection();
+
+        List<String> list = new ArrayList<>();
+        try {
+            String sql = "SELECT  DISTINCT flower_color FROM flower where store_id= "+StoreID;
+            st = conn.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                Flower flower = new Flower();
+                flower.setFlower_color(rs.getString(1));
+                list.add(flower.getFlower_color());
+            }
+            return list;
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        } finally {
+            DBUtil.close(conn, st, null, rs);
+        }
+        return null;
+    }
+
+    @Override
     public List<Flower> CheckFlowersByShops(String ShopName) {
         Connection conn = null;
         ResultSet rs = null;

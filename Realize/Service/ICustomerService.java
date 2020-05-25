@@ -89,6 +89,7 @@ public class ICustomerService implements CustomerService {
                 orders.setFlower_id(s.getFlower_id());
                 orders.setQuantity(s.getBuynum());
                 orders.setDate(df.format(new Date()));
+                orders.setStore_id(FactoryDAO.getIStore().CheckStoreByID(s.getFlower_id()).getStore_id());
                 ordersList.add(orders);
                 //删除购物车里的全部物品
                 FactoryDAO.getIShopList().DeleteItem(s.getShoplist_id());

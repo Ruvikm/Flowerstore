@@ -22,7 +22,7 @@ public class IStore implements StoreDAO {
                 ps.setInt(1, s.getStore_id());
                 ps.setString(2, s.getStore_name());
                 ps.setString(3, s.getStore_location());
-                ps.setInt(4, s.getStore_manager());
+                ps.setString(4, s.getStore_Bishours());
                 ps.executeUpdate();
             }
             return true;
@@ -55,7 +55,7 @@ public class IStore implements StoreDAO {
                 store.setStore_id(rs.getInt(1));
                 store.setStore_name(rs.getString(2));
                 store.setStore_location(rs.getString(3));
-                store.setStore_manager(rs.getInt(4));
+                store.setStore_Bishours(rs.getString(4));
                 list.add(store);
             }
             return list;
@@ -108,13 +108,13 @@ public class IStore implements StoreDAO {
     }
 
     @Override
-    public boolean SetStoreManager(int Store_id, int store_manager) {
+    public boolean SetStoreWorkTime(int Store_id,String Time) {
 
         Connection conn = null;
         Statement st = null;
         conn = DBUtil.getConnection();
         try {
-            String sql = "Update  flowerstore set store_manager = '" + store_manager + "'" + " where store_id =" + Store_id;
+            String sql = "Update  flowerstore set store_Bishours = '" + Time + "'" + " where store_id =" + Store_id;
             st = conn.createStatement();
             st.execute(sql);
             return true;
@@ -141,7 +141,35 @@ public class IStore implements StoreDAO {
                 store.setStore_id(rs.getInt(1));
                 store.setStore_name(rs.getString(2));
                 store.setStore_location(rs.getString(3));
-                store.setStore_manager(rs.getInt(4));
+                store.setStore_Bishours(rs.getString(4));
+                return store;
+            }
+            return null;
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        } finally {
+            DBUtil.close(conn, st, null, rs);
+        }
+        return null;
+    }
+
+    @Override
+    public Store CheckStoreByName(String Name) {
+        Connection conn = null;
+        ResultSet rs = null;
+        Statement st = null;
+        conn = DBUtil.getConnection();
+        try {
+            String sql = "select * from  flowerstore where store_name='"+Name+"'";
+            st = conn.createStatement();
+            rs = st.executeQuery(sql);
+            if (rs.next()) {
+                Store store = new Store();
+                store.setStore_id(rs.getInt(1));
+                store.setStore_name(rs.getString(2));
+                store.setStore_location(rs.getString(3));
+                store.setStore_Bishours(rs.getString(4));
                 return store;
             }
             return null;

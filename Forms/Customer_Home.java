@@ -268,7 +268,6 @@ public class Customer_Home extends JFrame {
     //修改密码
     private void SavePassActionPerformed(ActionEvent e) {
         // TODO add your code here
-        customer=FactoryDAO.getICustomer().getCustomerbyId(CustomerID);
         String OriginalP=String.valueOf(original_password.getPassword());
         String NewP=String.valueOf(new_password.getPassword());
         if(!OriginalP.equals("")&&!NewP.equals("")){
@@ -453,6 +452,7 @@ public class Customer_Home extends JFrame {
                 orders.setQuantity(Integer.parseInt(buy_numtext.getText()) );
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
                 orders.setDate(df.format(new Date()));
+                orders.setStore_id(FactoryDAO.getIStore().CheckStoreByID(flower.getFlower_id()).getStore_id());
                 list.add(orders);
                 FactoryService.getiCustomerService().AddToOrders(list);
                 //刷新账单

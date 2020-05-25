@@ -31,6 +31,7 @@ public class IOrders implements OrdersDAO {
                 orders.setQuantity(rs.getInt(3));
                 orders.setCustomer_id(rs.getInt(4));
                 orders.setDate(rs.getString(5));
+                orders.setStore_id(rs.getInt(6));
                 list.add(orders);
             }
             return list;
@@ -64,6 +65,7 @@ public class IOrders implements OrdersDAO {
                 orders.setQuantity(rs.getInt(3));
                 orders.setCustomer_id(rs.getInt(4));
                 orders.setDate(rs.getString(5));
+                orders.setStore_id(rs.getInt(6));
                 list.add(orders);
             }
             return list;
@@ -80,7 +82,7 @@ public class IOrders implements OrdersDAO {
     public boolean AddOrder(List<Orders> list) {
 
         Connection conn = DBUtil.getConnection();
-        String sql = "insert into orders values(?,?,?,?,?)";
+        String sql = "insert into orders values(?,?,?,?,?,?)";
         PreparedStatement ps = null;
         try {
             ps = conn.prepareStatement(sql);
@@ -90,6 +92,7 @@ public class IOrders implements OrdersDAO {
                 ps.setInt(3,s.getQuantity());
                 ps.setInt(4,s.getCustomer_id());
                 ps.setString(5,s.getDate());
+                ps.setInt(6,s.getStore_id());
                 ps.executeUpdate();
             }
             return true;

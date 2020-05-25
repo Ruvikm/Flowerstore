@@ -5,7 +5,7 @@ public class Store {
     private int store_id;
     private String store_name;
     private String store_location;
-    private int store_manager;
+    private String store_Bishours;
 
     public int getStore_id() {
         return store_id;
@@ -31,11 +31,11 @@ public class Store {
         this.store_location = store_location;
     }
 
-    public int getStore_manager() {
-        return store_manager;
+    public String getStore_Bishours() {
+        return store_Bishours;
     }
 
-    public void setStore_manager(int store_manager) {
-        this.store_manager = store_manager;
+    public void setStore_Bishours(String store_Bishours) {
+        this.store_Bishours = store_Bishours;
     }
 }

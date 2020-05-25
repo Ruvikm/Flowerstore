@@ -14,9 +14,11 @@ public interface StoreDAO {
 
     public boolean SetStoreLocation(int Store_id,String Location);
 
-    public boolean SetStoreManager(int Store_id,int store_manager);
+    public boolean SetStoreWorkTime(int Store_id,String Time);
 
     public Store CheckStoreByID(int StoreID);
+
+    public Store CheckStoreByName(String Name);
 
 
 }
