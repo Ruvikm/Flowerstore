@@ -1,14 +1,15 @@
 package FlowerStore.Realize.Service;
 
-import FlowerStore.Entity.Customer;
-import FlowerStore.Entity.Flower;
-import FlowerStore.Entity.ShopList;
-import FlowerStore.Entity.User;
+import FlowerStore.Entity.*;
 import FlowerStore.Factory.FactoryDAO;
 import FlowerStore.Factory.FactoryService;
 import FlowerStore.Interface.Service.CustomerService;
 import FlowerStore.Realize.DAO.IUser;
+import com.sun.org.apache.xpath.internal.operations.Or;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class ICustomerService implements CustomerService {
@@ -76,20 +77,57 @@ public class ICustomerService implements CustomerService {
 
         int sum = 0;
         List<ShopList> list = FactoryDAO.getIShopList().CheckAllList(CustomerID);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        List<Orders> ordersList = new ArrayList<>();
         if (list != null) {
             for (ShopList s : list) {
+                Orders orders=new Orders();
+                //计算总价
                 sum += s.getAllprice();
+                //添加到账单中
+                orders.setCustomer_id(CustomerID);
+                orders.setFlower_id(s.getFlower_id());
+                orders.setQuantity(s.getBuynum());
+                orders.setDate(df.format(new Date()));
+                ordersList.add(orders);
                 //删除购物车里的全部物品
                 FactoryDAO.getIShopList().DeleteItem(s.getShoplist_id());
             }
+            FactoryDAO.getIOrders().AddOrder(ordersList);
         }
+
+
+
         return sum;
 
     }
 
     @Override
-    public void CheckMyOrder() {
+    public boolean AddToOrders(List<Orders> list) {
+        return FactoryDAO.getIOrders().AddOrder(list);
+    }
 
+    @Override
+    public Object[][] CheckMyOrder(String head[],int CustomerID) {
+
+        //生成表格数据
+        Object[][] data = null;
+        List<Orders> list = FactoryDAO.getIOrders().CheckAllMyOrders(CustomerID);
+        data = new Object[list.size()][head.length];
+        if (list.size() != 0) {
+            for (int i = 0; i < list.size(); i++) {
+                String name = FactoryDAO.getIFlowers().CheckFlowersByID(list.get(i).getFlower_id()).getFlower_name();
+                int price = FactoryDAO.getIFlowers().CheckFlowersByID(list.get(i).getFlower_id()).getFlower_price();
+                for (int j = 0; j < head.length; j++) {
+                    data[i][0] = name;
+                    data[i][1] = price;
+                    data[i][2] = list.get(i).getQuantity();  // 购买数量
+                    data[i][3] = list.get(i).getQuantity() * price;
+                    data[i][4]=list.get(i).getDate();
+                }
+            }
+        }
+        return data;
     }
 
     @Override

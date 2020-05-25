@@ -4,7 +4,6 @@ public class Orders {
     private int orders_id;
     private int flower_id;
     private int quantity;
-    private int store_id;
     private int customer_id;
     private String date;
 
@@ -48,11 +47,4 @@ public class Orders {
         this.quantity = quantity;
     }
 
-    public int getStore_id() {
-        return store_id;
-    }
-
-    public void setStore_id(int store_id) {
-        this.store_id = store_id;
-    }
 }

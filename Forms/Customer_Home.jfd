@@ -94,11 +94,11 @@ new FormModel {
 									add( null )
 								} )
 							}, new java.util.Vector {
-								add( null )
-								add( null )
-								add( null )
-								add( null )
-								add( null )
+								add( "名字" )
+								add( "价格" )
+								add( "数量" )
+								add( "颜色" )
+								add( "有货商店" )
 							}, new java.util.Vector {
 								add( null )
 								add( null )
@@ -447,6 +447,51 @@ new FormModel {
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
 					name: "Orders"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane3"
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "listorder"
+							"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector, new java.util.Vector {
+								add( "名称" )
+								add( "单价" )
+								add( "数量" )
+								add( "总价" )
+								add( "日期" )
+							}, new java.util.Vector {
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+							}, new java.util.Vector {
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+							}, new java.util.Vector {
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+							} )
+						} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 0
+						"y": 0
+						"width": 685
+						"height": 240
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "ordertips"
+						"text": "不会还真有人没买过鲜花吧，不会吧不会吧"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 40
+						"y": 330
+						"width": 315
+						"height": 95
+					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "我的订单"
 				} )

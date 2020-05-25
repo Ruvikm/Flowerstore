@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import javax.swing.table.*;
 import FlowerStore.Entity.Customer;
 import FlowerStore.Entity.Flower;
+import FlowerStore.Entity.Orders;
 import FlowerStore.Entity.ShopList;
 import FlowerStore.Factory.FactoryDAO;
 import FlowerStore.Factory.FactoryService;
@@ -17,7 +18,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import javax.swing.*;
@@ -32,9 +35,10 @@ public class Customer_Home extends JFrame {
     private Customer customer=new Customer();
     private int CustomerID;
     List<Flower> list=new ArrayList<>();//存储所有花的列表
-    DefaultTableModel tableModel=new DefaultTableModel();//表格的数据源
+    DefaultTableModel tableModel=new DefaultTableModel();//查询表格的数据源
     private String head[]=new String[] {"名字", "价格","数量", "颜色", "有货商店"};//花的表头
     private String ListHead[]=new String[] {"名字", "单价","数量", "总价"};//购物车的表头
+    private String OrderList[]=new String[] {"名字", "单价","数量", "总价","日期"};//订单的表头
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JTabbedPane tabbedPane1;
     private JPanel Check;
@@ -77,6 +81,9 @@ public class Customer_Home extends JFrame {
     private JTable shoplist;
     private JLabel tips;
     private JPanel Orders;
+    private JScrollPane scrollPane3;
+    private JTable listorder;
+    private JLabel ordertips;
     private JPanel Me;
     private JLabel Title;
     private JLabel username;
@@ -111,6 +118,137 @@ public class Customer_Home extends JFrame {
         return pattern.matcher(str).matches();
     }
 
+
+
+    //region 加载数据
+    private void thisWindowOpened(WindowEvent e) {
+        // TODO add your code here
+        InitData();//个人信息及查询页面加载
+        InitShopList();//购物车预加载
+        InitOrdersJPanel();//订单预加载
+    }
+
+    private void InitData(){
+
+        //region 个人信息获取及自动填充
+        name=login.name;
+        customer=FactoryDAO.getICustomer().getCustomerbyName(name);
+        CustomerID=customer.getCustomer_id();
+        UserID.setText(Integer.toString(customer.getCustomer_id()));
+        usernametext.setText(customer.getCustomer_name());
+        sextext.setText(customer.getCustomer_sex());
+        phonetext.setText(customer.getCustomer_phone());
+        signtext.setText(customer.getCustomer_sign());
+        //endregion
+
+        //region 获取全部花的信息
+        tableModel=new DefaultTableModel(FactoryService.getiCustomerService().CheckAllFlowers(head),head){
+            //使不可编辑
+            public boolean isCellEditable(int row, int column)
+            {
+                return false;
+            }
+        };
+        FlowerList.setModel(tableModel);//填充Jtable
+        FlowerList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);//
+
+
+        //第一个为空值,默认不选以及可以实现多次选择
+        comboBox_name.addItem(null);
+        comboBox_color.addItem(null);
+        comboBox_shop.addItem(null);
+        //自动填充下拉菜单
+        list=FactoryDAO.getIFlowers().CheckAllFlowers();
+        //填充名字(名字不会出现重复)
+        for(Flower v:list){
+            comboBox_name.addItem(v.getFlower_name());
+            Buy_comboBox.addItem(v.getFlower_name());
+        }
+        //填充颜色
+        List<String> ColorList=FactoryDAO.getIFlowers().checkAllColors();
+        for(String v:ColorList){
+            comboBox_color.addItem(v);
+        }
+        //填充商店
+        List<Integer> ShopID=FactoryDAO.getIFlowers().checkAllShops();
+        for(Integer v:ShopID){
+            comboBox_shop.addItem(FactoryDAO.getIStore().CheckStoreByID(v).getStore_name());
+        }
+        //endregion
+    }
+
+    private void InitShopList() {
+        DefaultTableModel tableModelShop=new DefaultTableModel();//表格的数据源
+        tableModelShop = new DefaultTableModel(FactoryService.getiCustomerService().CheckMyList(ListHead, CustomerID), ListHead) {
+            //使不可编辑
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        if (FactoryService.getiCustomerService().CheckMyList(ListHead, CustomerID).length!=0) {
+            shoplist.setModel(tableModelShop);//填充Jtable
+            shoplist.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            shoplist.setVisible(true);
+            checkout.setText("结算");
+            tips.setText("右键购物车内容可以删除哦~");
+        } else {
+            shoplist.setVisible(false);
+            tips.setVisible(true);
+            tips.setText("购物车竟然是空的哦~ 再忙，也要记得买点什么犒劳自己~");
+            String s="买买买！";
+            checkout.setText(s);
+        }
+
+    }
+
+    private void InitOrdersJPanel(){
+        DefaultTableModel tableModelOrders=new DefaultTableModel();//表格的数据源
+        tableModelOrders = new DefaultTableModel(FactoryService.getiCustomerService().CheckMyOrder(OrderList,CustomerID), OrderList) {
+            //使不可编辑
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        if(FactoryService.getiCustomerService().CheckMyOrder(OrderList,CustomerID).length!=0){
+            listorder.setModel(tableModelOrders);//填充Jtable
+            listorder.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            ordertips.setVisible(false);
+            listorder.setVisible(true);
+        }
+        else{
+            ordertips.setVisible(true);
+            listorder.setVisible(false);
+        }
+
+
+    }
+
+    private void initBuyJPanel(String clickName){
+        Flower flower = FactoryService.getiCustomerService().CheckFlowersByName(clickName);
+        //给label赋值
+        namelabel.setText(flower.getFlower_name());
+        colorlabel.setText(flower.getFlower_color());
+        Numlabel.setText(String.valueOf(flower.getFlower_num()));
+        pricelabel.setText(String.valueOf(flower.getFlower_price()));
+        //更换图片
+        //System.out.println("E:\\college\\code\\Java\\src\\FlowerStore\\img\\flowers\\"+flower.getFlower_name()+".png");
+        ImageIcon image = null;
+        try {
+            //图片自适应大小填充
+            image = new ImageIcon(ImageIO.read(new File("E:\\college\\code\\Java\\src\\FlowerStore\\img\\flowers\\"+flower.getFlower_name()+".png")));
+            image.setImage(image.getImage().getScaledInstance(280, 280,Image.SCALE_DEFAULT ));
+            picturelabel .setIcon(image);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    //endregion
+
+
+    //region 个人信息界面
+
+    //修改信息
     private void SaveInformationActionPerformed(ActionEvent e) {
         // TODO add your code here
         boolean flag = false;
@@ -127,13 +265,7 @@ public class Customer_Home extends JFrame {
             JOptionPane.showMessageDialog(null, "修改成功！");
     }
 
-    private void thisWindowOpened(WindowEvent e) {
-        // TODO add your code here
-        InitData();
-        InitShopList();
-
-    }
-
+    //修改密码
     private void SavePassActionPerformed(ActionEvent e) {
         // TODO add your code here
         customer=FactoryDAO.getICustomer().getCustomerbyId(CustomerID);
@@ -148,6 +280,11 @@ public class Customer_Home extends JFrame {
                 JOptionPane.showMessageDialog(null, "原密码错误！");
         }
     }
+
+    //endregion
+
+
+    //region 查询界面
 
     private void buttonchooseActionPerformed(ActionEvent e) {
         // TODO add your code here
@@ -229,88 +366,7 @@ public class Customer_Home extends JFrame {
 
     }
 
-    private void InitData(){
-
-        //region 个人信息获取及自动填充
-        name=login.name;
-        customer=FactoryDAO.getICustomer().getCustomerbyName(name);
-        CustomerID=customer.getCustomer_id();
-        UserID.setText(Integer.toString(customer.getCustomer_id()));
-        usernametext.setText(customer.getCustomer_name());
-        sextext.setText(customer.getCustomer_sex());
-        phonetext.setText(customer.getCustomer_phone());
-        signtext.setText(customer.getCustomer_sign());
-        //endregion
-
-        //region 获取全部花的信息
-        tableModel=new DefaultTableModel(FactoryService.getiCustomerService().CheckAllFlowers(head),head){
-            //使不可编辑
-            public boolean isCellEditable(int row, int column)
-            {
-                return false;
-            }
-        };
-        FlowerList.setModel(tableModel);//填充Jtable
-        FlowerList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);//
-
-
-        //第一个为空值,默认不选以及可以实现多次选择
-        comboBox_name.addItem(null);
-        comboBox_color.addItem(null);
-        comboBox_shop.addItem(null);
-        //自动填充下拉菜单
-        list=FactoryDAO.getIFlowers().CheckAllFlowers();
-        //填充名字(名字不会出现重复)
-        for(Flower v:list){
-            comboBox_name.addItem(v.getFlower_name());
-            Buy_comboBox.addItem(v.getFlower_name());
-        }
-        //填充颜色
-        List<String> ColorList=FactoryDAO.getIFlowers().checkAllColors();
-        for(String v:ColorList){
-            comboBox_color.addItem(v);
-        }
-        //填充商店
-        List<Integer> ShopID=FactoryDAO.getIFlowers().checkAllShops();
-        for(Integer v:ShopID){
-            comboBox_shop.addItem(FactoryDAO.getIStore().CheckStoreByID(v).getStore_name());
-        }
-        //endregion
-    }
-
-    private void InitShopList() {
-        tableModel = new DefaultTableModel(FactoryService.getiCustomerService().CheckMyList(ListHead, CustomerID), ListHead) {
-            //使不可编辑
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        if (FactoryService.getiCustomerService().CheckMyList(ListHead, CustomerID).length!=0) {
-            shoplist.setModel(tableModel);//填充Jtable
-            shoplist.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            shoplist.setVisible(true);
-            checkout.setText("结算");
-            tips.setText("右键购物车内容可以删除哦~");
-        } else {
-            shoplist.setVisible(false);
-            tips.setVisible(true);
-            tips.setText("购物车竟然是空的哦~ 再忙，也要记得买点什么犒劳自己~");
-            String s="买买买！";
-            checkout.setText(s);
-        }
-
-    }
-
-    private void Buy_comboBoxItemStateChanged(ItemEvent e) {
-        // TODO add your code here
-        String ChooseName = null;
-        if (Buy_comboBox.getSelectedItem() != null) {
-            ChooseName = (String) Buy_comboBox.getSelectedItem();
-        } //获取被选中的项
-        initBuyJPanel(ChooseName);
-
-    }
-
+    //查询列表中的某一项被点击时
     private void FlowerListMouseClicked(MouseEvent e) {
         // TODO add your code here
         if (e.getClickCount() == 2) {
@@ -326,26 +382,23 @@ public class Customer_Home extends JFrame {
 
     }
 
-    private void initBuyJPanel(String clickName){
-        Flower flower = FactoryService.getiCustomerService().CheckFlowersByName(clickName);
-        //给label赋值
-        namelabel.setText(flower.getFlower_name());
-        colorlabel.setText(flower.getFlower_color());
-        Numlabel.setText(String.valueOf(flower.getFlower_num()));
-        pricelabel.setText(String.valueOf(flower.getFlower_price()));
-        //更换图片
-        //System.out.println("E:\\college\\code\\Java\\src\\FlowerStore\\img\\flowers\\"+flower.getFlower_name()+".png");
-        ImageIcon image = null;
-        try {
-            //图片自适应大小填充
-            image = new ImageIcon(ImageIO.read(new File("E:\\college\\code\\Java\\src\\FlowerStore\\img\\flowers\\"+flower.getFlower_name()+".png")));
-            image.setImage(image.getImage().getScaledInstance(280, 280,Image.SCALE_DEFAULT ));
-            picturelabel .setIcon(image);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
+    //endregion
+
+
+    //region 商品详情
+
+    //下拉选项改变时
+    private void Buy_comboBoxItemStateChanged(ItemEvent e) {
+        // TODO add your code here
+        String ChooseName = null;
+        if (Buy_comboBox.getSelectedItem() != null) {
+            ChooseName = (String) Buy_comboBox.getSelectedItem();
+        } //获取被选中的项
+        initBuyJPanel(ChooseName);
+
     }
 
+    //添加到购物车
     private void AddToListActionPerformed(ActionEvent e) {
         // TODO add your code here
         int BuyNum = 0;
@@ -378,6 +431,45 @@ public class Customer_Home extends JFrame {
 
     }
 
+    //立即购买
+    private void buyNowButtonActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        String ChooseName = null;
+        if (Buy_comboBox.getSelectedItem() != null) {
+            ChooseName = (String) Buy_comboBox.getSelectedItem();
+        } //获取被选中的项
+        Flower flower = FactoryService.getiCustomerService().CheckFlowersByName(ChooseName);
+
+
+        if (!buy_numtext.getText().equals("")) {
+            if (isInteger(buy_numtext.getText()) && Integer.parseInt(buy_numtext.getText()) > 0) {
+                int Sum = Integer.parseInt(buy_numtext.getText()) * flower.getFlower_price();
+                JOptionPane.showMessageDialog(null, "请支付" + Sum + "元！");
+                //添加到账单
+                List<Orders> list=new ArrayList<>();
+                Orders orders=new Orders();
+                orders.setCustomer_id(CustomerID);
+                orders.setFlower_id(flower.getFlower_id());
+                orders.setQuantity(Integer.parseInt(buy_numtext.getText()) );
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                orders.setDate(df.format(new Date()));
+                list.add(orders);
+                FactoryService.getiCustomerService().AddToOrders(list);
+                //刷新账单
+                InitOrdersJPanel();
+            } else
+                JOptionPane.showMessageDialog(null, "应为大于0的整数！");
+        } else
+            JOptionPane.showMessageDialog(null, "请输入购买数量！");
+    }
+
+
+    //endregion
+
+
+   //region 购物车界面
+
+    //弹出右键菜单
     private void shoplistMouseClicked(MouseEvent e) {
         // TODO add your code here
         if(e.getButton()==MouseEvent.BUTTON3)
@@ -389,6 +481,7 @@ public class Customer_Home extends JFrame {
 
     }
 
+    //删除购物车所选内容
     private void menuItem_deleteActionPerformed(ActionEvent e) {
         // TODO add your code here
         String deleteName = (String) shoplist.getValueAt(shoplist.getSelectedRow(),0);
@@ -400,33 +493,22 @@ public class Customer_Home extends JFrame {
 
     }
 
+    //结账
     private void checkoutActionPerformed(ActionEvent e) {
         // TODO add your code here
         int AllPrice = FactoryService.getiCustomerService().CheckOut(CustomerID);
         if (AllPrice != 0) {
             JOptionPane.showMessageDialog(null, "请支付" + AllPrice + "元！");
             InitShopList();
+            InitOrdersJPanel();
         } else
             JOptionPane.showMessageDialog(null, "购物车里无商品！");
     }
 
-    private void buyNowButtonActionPerformed(ActionEvent e) {
-        // TODO add your code here
-        String ChooseName = null;
-        if (Buy_comboBox.getSelectedItem() != null) {
-            ChooseName = (String) Buy_comboBox.getSelectedItem();
-        } //获取被选中的项
-        Flower flower = FactoryService.getiCustomerService().CheckFlowersByName(ChooseName);
-        if (!buy_numtext.getText().equals("")) {
-            if (isInteger(buy_numtext.getText()) && Integer.parseInt(buy_numtext.getText()) > 0) {
-                int Sum = Integer.parseInt(buy_numtext.getText()) * flower.getFlower_price();
-                JOptionPane.showMessageDialog(null, "请支付" + Sum + "元！");
-            } else
-                JOptionPane.showMessageDialog(null, "应为大于0的整数！");
-        } else
-            JOptionPane.showMessageDialog(null, "请输入购买数量！");
-    }
+    //endregion
 
+
+    //插件自动生成，不要修改
     private void initComponents() {
         
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -471,6 +553,9 @@ public class Customer_Home extends JFrame {
         shoplist = new JTable();
         tips = new JLabel();
         Orders = new JPanel();
+        scrollPane3 = new JScrollPane();
+        listorder = new JTable();
+        ordertips = new JLabel();
         Me = new JPanel();
         Title = new JLabel();
         username = new JLabel();
@@ -532,7 +617,7 @@ public class Customer_Home extends JFrame {
                             {null, null, null, null, null},
                         },
                         new String[] {
-                            null, null, null, null, null
+                            "\u540d\u5b57", "\u4ef7\u683c", "\u6570\u91cf", "\u989c\u8272", "\u6709\u8d27\u5546\u5e97"
                         }
                     ) {
                         boolean[] columnEditable = new boolean[] {
@@ -814,6 +899,27 @@ public class Customer_Home extends JFrame {
             //======== Orders ========
             {
                 Orders.setLayout(null);
+
+                //======== scrollPane3 ========
+                {
+
+                    //---- listorder ----
+                    listorder.setModel(new DefaultTableModel(
+                        new Object[][] {
+                        },
+                        new String[] {
+                            "\u540d\u79f0", "\u5355\u4ef7", "\u6570\u91cf", "\u603b\u4ef7", "\u65e5\u671f"
+                        }
+                    ));
+                    scrollPane3.setViewportView(listorder);
+                }
+                Orders.add(scrollPane3);
+                scrollPane3.setBounds(0, 0, 685, 240);
+
+                //---- ordertips ----
+                ordertips.setText("\u4e0d\u4f1a\u8fd8\u771f\u6709\u4eba\u6ca1\u4e70\u8fc7\u9c9c\u82b1\u5427\uff0c\u4e0d\u4f1a\u5427\u4e0d\u4f1a\u5427");
+                Orders.add(ordertips);
+                ordertips.setBounds(40, 330, 315, 95);
 
                 {
                     // compute preferred size
