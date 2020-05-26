@@ -5,6 +5,7 @@ import FlowerStore.Entity.ShopList;
 
 import java.util.List;
 
+//shoplist表的接口
 public interface ShopListDAO {
 
     public List<ShopList> CheckAllList(int CustomerID);

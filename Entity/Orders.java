@@ -1,12 +1,12 @@
 package FlowerStore.Entity;
 
 public class Orders {
-    private int orders_id;
-    private int flower_id;
-    private int quantity;
-    private int customer_id;
-    private String date;
-    private int store_id;
+    private int orders_id;//订单ID
+    private int flower_id;//鲜花ID
+    private int quantity;//购买数量
+    private int customer_id;//顾客ID
+    private String date;//购买日期
+    private int store_id;//商店ID
 
     public int getStore_id() {
         return store_id;

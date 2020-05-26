@@ -1,12 +1,12 @@
 package FlowerStore.Entity;
 
 public class Flower {
-    private int flower_id;
-    private String flower_name;
-    private int flower_num;
-    private int flower_price;
-    private String flower_color;
-    private int store_id;
+    private int flower_id;//鲜花ID
+    private String flower_name;//鲜花名字
+    private int flower_num;//鲜花数量
+    private int flower_price;//鲜花价格
+    private String flower_color;//鲜花颜色
+    private int store_id;//商店ID
 
     public int getFlower_id() {
         return flower_id;

@@ -4,6 +4,7 @@ import FlowerStore.Entity.Flower;
 
 import java.util.List;
 
+//flower表的接口
 public interface FlowerDAO {
 
     //根据名字查询鲜花

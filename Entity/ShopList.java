@@ -1,11 +1,11 @@
 package FlowerStore.Entity;
 
 public class ShopList {
-    private int shoplist_id;
-    private int customer_id;
-    private int flower_id;
-    private int buynum;
-    private int allprice;
+    private int shoplist_id;//购物车中一项的ID
+    private int customer_id;//顾客ID
+    private int flower_id;//鲜花ID
+    private int buynum;//购买数量
+    private int allprice;//总价
 
     public int getAllprice() {
         return allprice;

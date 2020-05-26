@@ -4,6 +4,7 @@
 
 package FlowerStore.Forms;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.*;
 import FlowerStore.Entity.Customer;
 import FlowerStore.Entity.Flower;
@@ -13,7 +14,9 @@ import FlowerStore.Factory.FactoryService;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.*;
 
@@ -24,10 +27,10 @@ import static FlowerStore.Forms.Customer_Home.isInteger;
  */
 public class Manager_Home extends JFrame {
 
-    DefaultTableModel OnSellList=new DefaultTableModel();//表格的数据源
-    private String head[]=new String[] {"名字", "价格","数量", "颜色"};//销售花的表头
-    private String OrderList[]=new String[] {"名字", "单价","数量", "总价","日期"};//订单的表头
-    private int StoreID;
+    DefaultTableModel OnSellList = new DefaultTableModel();//表格的数据源
+    private String head[] = new String[]{"名字", "价格", "数量", "颜色"};//销售花的表头
+    private String OrderList[] = new String[]{"名字", "单价", "数量", "总价", "日期"};//订单的表头
+    private int StoreID;//全局变量ID
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JTabbedPane tabbedPane1;
     private JPanel manange_panel;
@@ -83,12 +86,80 @@ public class Manager_Home extends JFrame {
     private JButton SavePassWord;
     private JLabel label6;
     private JLabel label21;
+    private JPanel newStore_panel;
+    private JLabel label22;
+    private JLabel label23;
+    private JLabel label24;
+    private JTextField textName;
+    private JTextField textLocation;
+    private JTextField textTime;
+    private JButton SaveNewStore;
+    private JLabel label25;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public Manager_Home(){
+    public Manager_Home() {
         initComponents();
     }
 
+    private static void OnloadPicture(JButton developer) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setMultiSelectionEnabled(true);
+        /** 过滤文件类型 * */
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("png","png");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(developer);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            /** 得到选择的文件* */
+            File[] arrfiles = chooser.getSelectedFiles();
+            if (arrfiles == null || arrfiles.length == 0) {
+                return;
+            }
+            FileInputStream input = null;
+            FileOutputStream out = null;
+            String path = "E:\\college\\code\\Java\\src\\FlowerStore\\img\\flowers";
+            try {
+                for (File f : arrfiles) {
+                    File dir = new File(path);
+                    /** 目标文件夹 * */
+                    File[] fs = dir.listFiles();
+                    HashSet<String> set = new HashSet<String>();
+                    for (File file : fs) {
+                        set.add(file.getName());
+                    }
+                    /** 判断是否已有该文件* */
+                    if (set.contains(f.getName())) {
+                        JOptionPane.showMessageDialog(new JDialog(), f.getName() + ":该文件已存在！");
+                        return;
+                    }
+                    input = new FileInputStream(f);
+                    byte[] buffer = new byte[1024];
+                    File des = new File(path, f.getName());
+                    out = new FileOutputStream(des);
+                    int len = 0;
+                    while (-1 != (len = input.read(buffer))) {
+                        out.write(buffer, 0, len);
+                    }
+                    out.close();
+                    input.close();
+                }
+                JOptionPane.showMessageDialog(null, "上传图片成功！", "提示",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (FileNotFoundException e1) {
+                JOptionPane.showMessageDialog(null, "上传图片失败！", "提示",
+                        JOptionPane.ERROR_MESSAGE);
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                JOptionPane.showMessageDialog(null, "上传图片失败！", "提示",
+                        JOptionPane.ERROR_MESSAGE);
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    //region初始化数据
+
+    //窗口打开时
     private void thisWindowOpened(WindowEvent e) {
         // TODO add your code here
         InitStaticData();
@@ -96,41 +167,33 @@ public class Manager_Home extends JFrame {
         initOnSellList();
     }
 
-    private void StoreNameBoxItemStateChanged(ItemEvent e) {
-        // TODO add your code here
-        String ChooseName = null;
-        if (StoreNameBox.getSelectedItem() != null) {
-            ChooseName = (String) StoreNameBox.getSelectedItem();
-        } //获取被选中的项
-        initInformationPanel(ChooseName);
-        initHistoryPanel();
-        initOnSellList();
-    }
+    //个人信息界面
+    private void initInformationPanel(String StoreName) {
 
-    private void initInformationPanel(String StoreName){
-        Store store=new Store();
-        store= FactoryService.getFlowerStoreService().CheckStoreByName(StoreName);
-        StoreID=store.getStore_id();
+
+        Store store = new Store();
+        store = FactoryService.getFlowerStoreService().CheckStoreByName(StoreName);
+        StoreID = store.getStore_id();
         StoreIDlanel.setText(String.valueOf(store.getStore_id()));
         textField_location.setText(store.getStore_location());
         textField_time.setText(store.getStore_Bishours());
     }
 
-    private void initOnSellList(){
-        OnSellList = new DefaultTableModel(FactoryService.getFlowerStoreService().Sell_CheckAllFlowers(head,StoreID), head) {
+    //查询界面
+    private void initOnSellList() {
+        OnSellList = new DefaultTableModel(FactoryService.getFlowerStoreService().Sell_CheckAllFlowers(head, StoreID), head) {
             //使不可编辑
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        if(FactoryService.getFlowerStoreService().Sell_CheckAllFlowers(OrderList,StoreID).length!=0){
+        if (FactoryService.getFlowerStoreService().Sell_CheckAllFlowers(OrderList, StoreID).length != 0) {
             OnSelll_List.setModel(OnSellList);//填充Jtable
             OnSelll_List.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             OnsSellTip.setVisible(false);
             OnSelll_List.setVisible(true);
 
-        }
-        else{
+        } else {
             OnsSellTip.setVisible(true);
             OnSelll_List.setVisible(false);
         }
@@ -145,92 +208,119 @@ public class Manager_Home extends JFrame {
         comboBoxName.addItem(null);
         comboBoxColor.addItem(null);
 
-        List<Flower> NameList=FactoryService.getFlowerStoreService().CheckFlowerByStoreID(StoreID);
+        List<Flower> NameList = FactoryService.getFlowerStoreService().CheckFlowerByStoreID(StoreID);
         //填充名字
-        for(Flower v:NameList){
+        for (Flower v : NameList) {
             comboBoxName.addItem(v.getFlower_name());
             comboBoxIn.addItem(v.getFlower_name());
             comboBoxOut.addItem(v.getFlower_name());
         }
 
-        List<String> ColorList=FactoryService.getFlowerStoreService().CheckAllColorsByStoreID(StoreID);
-        for(String v:ColorList){
+        List<String> ColorList = FactoryService.getFlowerStoreService().CheckAllColorsByStoreID(StoreID);
+        for (String v : ColorList) {
             comboBoxColor.addItem(v);
         }
         comboBoxIn.setSelectedIndex(-1);
         comboBoxOut.setSelectedIndex(-1);
     }
 
-    private void initHistoryPanel(){
-        DefaultTableModel tableModelOrders=new DefaultTableModel();//表格的数据源
-        tableModelOrders = new DefaultTableModel(FactoryService.getFlowerStoreService().CheckAllStoreOrders(OrderList,StoreID), OrderList) {
+    //账单界面
+    private void initHistoryPanel() {
+        DefaultTableModel tableModelOrders = new DefaultTableModel();//表格的数据源
+        tableModelOrders = new DefaultTableModel(FactoryService.getFlowerStoreService().CheckAllStoreOrders(OrderList, StoreID), OrderList) {
             //使不可编辑
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        if(FactoryService.getFlowerStoreService().CheckAllStoreOrders(OrderList,StoreID).length!=0){
+        if (FactoryService.getFlowerStoreService().CheckAllStoreOrders(OrderList, StoreID).length != 0) {
             historylist.setModel(tableModelOrders);//填充Jtable
             historylist.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             history_tip.setText("要继续嘎油才会财源滚滚鸭~");
 
             historylist.setVisible(true);
-        }
-        else{
+        } else {
             history_tip.setText("宁的生意也太惨谈了8");
             historylist.setVisible(false);
         }
     }
 
-    private void InitStaticData(){
+    //endregion
+
+
+    //region 商店信息界面
+
+    //加载商店列表
+    private void InitStaticData() {
         //商店信息
-        List<Store> list=new ArrayList<>();
-        list= FactoryService.getFlowerStoreService().CheckAllMyStore();
-        for(Store item : list) {
+
+        List<Store> list = new ArrayList<>();
+        list = FactoryService.getFlowerStoreService().CheckAllMyStore();
+        for (Store item : list) {
             StoreNameBox.addItem(item.getStore_name());
         }
         initInformationPanel((String) StoreNameBox.getSelectedItem());
     }
 
+    //商店信息中下拉商店变化时
+    private void StoreNameBoxItemStateChanged(ItemEvent e) {
+        // TODO add your code here
+        String ChooseName = null;
+        if (StoreNameBox.getSelectedItem() != null) {
+            ChooseName = (String) StoreNameBox.getSelectedItem();
+        } //获取被选中的项
+        initInformationPanel(ChooseName);
+        initHistoryPanel();
+        initOnSellList();
+    }
+
+    //保存商店信息
     private void SaveActionPerformed(ActionEvent e) {
         // TODO add your code here
-        String Name=null;
-        String Location=null;
-        String WorkTime=null;
+        String Name = null;
+        String Location = null;
+        String WorkTime = null;
         if (StoreNameBox.getSelectedItem() != null) {
             Name = (String) StoreNameBox.getSelectedItem();
         } //获取被选中的项
-        if(textField_location.getText()!=null)
-            Location=textField_location.getText();
-        if(textField_time.getText()!=null)
-            WorkTime=textField_time.getText();
-        if(FactoryService.getFlowerStoreService().EditInformation(StoreID,Name,Location,WorkTime))
+        if (textField_location.getText() != null)
+            Location = textField_location.getText();
+        if (textField_time.getText() != null)
+            WorkTime = textField_time.getText();
+        if (FactoryService.getFlowerStoreService().EditInformation(StoreID, Name, Location, WorkTime))
             JOptionPane.showMessageDialog(null, "修改成功！");
         else
             JOptionPane.showMessageDialog(null, "修改出错！");
 
     }
 
+    //endregion
+
+
+    //region 查询界面
+
+    //保存新密码
     private void SavePassWordActionPerformed(ActionEvent e) {
         // TODO add your code here
         String OriginalP = String.valueOf(OrdpasswordField.getPassword());
         String NewP = String.valueOf(NewpasswordField.getPassword());
-        if (FactoryService.getFlowerStoreService().ChangePassWord(1,OriginalP,NewP)) {
+        if (FactoryService.getFlowerStoreService().ChangePassWord(1, OriginalP, NewP)) {
             JOptionPane.showMessageDialog(null, "修改密码成功！");
         } else
             JOptionPane.showMessageDialog(null, "原密码错误！");
 
     }
 
+    //查找
     private void ChooseActionPerformed(ActionEvent e) {
         // TODO add your code here
-        String StoreName=FactoryService.getFlowerStoreService().CheckStoreByID(StoreID).getStore_name();
+        String StoreName = FactoryService.getFlowerStoreService().CheckStoreByID(StoreID).getStore_name();
         String flowerName = null;
         String color = null;
         int LowNum = -1;
         int HighNum = -1;
-        boolean Num1Flag=true;
-        boolean Num2Flag=true;
+        boolean Num1Flag = true;
+        boolean Num2Flag = true;
         if (!textFieldNum1.getText().equals("")) {
             if (isInteger(textFieldNum1.getText())) {
                 Num1Flag = true;
@@ -270,13 +360,13 @@ public class Manager_Home extends JFrame {
                 OnSelll_List.setModel(OnSellList);//填充Jtable
                 manange_panel.revalidate();
                 scrollPane1.validate();
-            }
-            else
+            } else
                 JOptionPane.showMessageDialog(null, "找不到结果！");
         }
 
     }
 
+    //进货
     private void buttonInActionPerformed(ActionEvent e) {
         // TODO add your code here
         boolean NameFlag = false;
@@ -304,6 +394,7 @@ public class Manager_Home extends JFrame {
 
     }
 
+    //出仓
     private void buttonOutActionPerformed(ActionEvent e) {
         // TODO add your code here
         // TODO add your code here
@@ -325,15 +416,22 @@ public class Manager_Home extends JFrame {
                 JOptionPane.showMessageDialog(null, "出货成功！");
                 initOnSellList();
                 JSpinnerOut.setValue(0);
-            }
-            else
+            } else
                 JOptionPane.showMessageDialog(null, "出仓失败！");
         } else
             JOptionPane.showMessageDialog(null, "出仓信息错误！");
     }
 
+
+    //endregion
+
+
+    //region 新增商店界面
+
+    //添加新品种
     private void NewbuttonActionPerformed(ActionEvent e) {
         // TODO add your code here
+
         boolean NameFlag = false;
         boolean ColorFlag = false;
         boolean PriceFlag = false;
@@ -350,11 +448,14 @@ public class Manager_Home extends JFrame {
             ColorFlag = true;
         }
         if (!textFieldPrice.getText().equals("")) {
-            NewPrice = Integer.parseInt(textFieldPrice.getText());
-            PriceFlag = true;
+            if (isInteger(textFieldPrice.getText()) && Integer.parseInt(textFieldPrice.getText()) > 0) {
+                NewPrice = Integer.parseInt(textFieldPrice.getText());
+                PriceFlag = true;
+            } else
+                JOptionPane.showMessageDialog(null, "价格应为大于0的整数！");
         }
-        List<Flower> flowerList=new ArrayList<>();
-        Flower flower=new Flower();
+        List<Flower> flowerList = new ArrayList<>();
+        Flower flower = new Flower();
 
         if (NameFlag && ColorFlag && PriceFlag) {
             flower.setFlower_name(NewName);
@@ -362,17 +463,70 @@ public class Manager_Home extends JFrame {
             flower.setFlower_price(NewPrice);
             flower.setStore_id(StoreID);
             flower.setFlower_num(0);
-             flowerList.add(flower);
-            if(FactoryService.getFlowerStoreService().Cultivate(flowerList)) {
+            flowerList.add(flower);
+            if (FactoryService.getFlowerStoreService().Cultivate(flowerList)) {
+                JOptionPane.showMessageDialog(null, "上传的图片名字请确保和花的名字一致且为png格式！");
+                OnloadPicture(Newbutton);
                 JOptionPane.showMessageDialog(null, "添加成功！");
                 initOnSellList();
-            }
-            else
-                JOptionPane.showMessageDialog(null, "添加失败！");
-        }
-        else
+            } else
+                JOptionPane.showMessageDialog(null, "该商店已有该品种！");
+        } else
             JOptionPane.showMessageDialog(null, "信息错误！");
     }
+
+    //endregion
+
+    //region 上传图片文件
+
+    private void SaveNewStoreActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        String Name = null;
+        String Location = null;
+        String WorkTime = null;
+        boolean NFlag = false;
+        boolean LFlag = false;
+        boolean WFlag = false;
+
+        if (!textName.getText().equals("")) {
+            Name = textName.getText();
+            NFlag = true;
+        } else {
+            JOptionPane.showMessageDialog(null, "名字不能为空！");
+        }
+        if (!textLocation.getText().equals("")) {
+            Location = textLocation.getText();
+            LFlag = true;
+        } else {
+            JOptionPane.showMessageDialog(null, "地址不能为空！");
+        }
+        if (!textTime.getText().equals("")) {
+            WorkTime = textTime.getText();
+            WFlag = true;
+        } else {
+            JOptionPane.showMessageDialog(null, "营业时间不能为空！");
+        }
+
+        if (NFlag && LFlag && WFlag) {
+            List<Store> storeList = new ArrayList<>();
+            Store store = new Store();
+            store.setStore_name(Name);
+            store.setStore_location(Location);
+            store.setStore_Bishours(WorkTime);
+            storeList.add(store);
+            if (FactoryService.getFlowerStoreService().AddStore(storeList)) {
+                JOptionPane.showMessageDialog(null, "新商店开业成功！");
+                StoreNameBox.addItem(Name);
+            } else
+                JOptionPane.showMessageDialog(null, "名字重复！");
+        }
+
+    }
+
+
+
+
+    //endregion
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -430,6 +584,15 @@ public class Manager_Home extends JFrame {
         SavePassWord = new JButton();
         label6 = new JLabel();
         label21 = new JLabel();
+        newStore_panel = new JPanel();
+        label22 = new JLabel();
+        label23 = new JLabel();
+        label24 = new JLabel();
+        textName = new JTextField();
+        textLocation = new JTextField();
+        textTime = new JTextField();
+        SaveNewStore = new JButton();
+        label25 = new JLabel();
 
         //======== this ========
         addWindowListener(new WindowAdapter() {
@@ -769,7 +932,67 @@ public class Manager_Home extends JFrame {
                     information_panel.setPreferredSize(preferredSize);
                 }
             }
-            tabbedPane1.addTab("\u7ba1\u7406\u5e97\u94fa", information_panel);
+            tabbedPane1.addTab("\u5e97\u94fa\u4fe1\u606f", information_panel);
+
+            //======== newStore_panel ========
+            {
+                newStore_panel.setLayout(null);
+
+                //---- label22 ----
+                label22.setText("\u5e97\u94fa\u540d\u5b57");
+                label22.setFont(label22.getFont().deriveFont(label22.getFont().getSize() + 1f));
+                label22.setLabelFor(textName);
+                newStore_panel.add(label22);
+                label22.setBounds(145, 135, 60, label22.getPreferredSize().height);
+
+                //---- label23 ----
+                label23.setText("\u5e97\u94fa\u4f4d\u7f6e");
+                label23.setFont(label23.getFont().deriveFont(label23.getFont().getSize() + 1f));
+                label23.setLabelFor(textLocation);
+                newStore_panel.add(label23);
+                label23.setBounds(145, 215, 60, 18);
+
+                //---- label24 ----
+                label24.setText("\u8425\u4e1a\u65f6\u95f4");
+                label24.setFont(label24.getFont().deriveFont(label24.getFont().getSize() + 1f));
+                label24.setLabelFor(textTime);
+                newStore_panel.add(label24);
+                label24.setBounds(145, 295, 60, 18);
+                newStore_panel.add(textName);
+                textName.setBounds(235, 130, 195, 30);
+                newStore_panel.add(textLocation);
+                textLocation.setBounds(235, 210, 195, 30);
+                newStore_panel.add(textTime);
+                textTime.setBounds(235, 290, 195, 30);
+
+                //---- SaveNewStore ----
+                SaveNewStore.setText("\u4fdd\u5b58");
+                SaveNewStore.addActionListener(e -> SaveNewStoreActionPerformed(e));
+                newStore_panel.add(SaveNewStore);
+                SaveNewStore.setBounds(525, 435, 90, 30);
+
+                //---- label25 ----
+                label25.setText("\u5e97\u94fa\u4fe1\u606f");
+                label25.setFont(label25.getFont().deriveFont(label25.getFont().getSize() + 2f));
+                newStore_panel.add(label25);
+                label25.setBounds(75, 55, label25.getPreferredSize().width, 20);
+
+                {
+                    // compute preferred size
+                    Dimension preferredSize = new Dimension();
+                    for(int i = 0; i < newStore_panel.getComponentCount(); i++) {
+                        Rectangle bounds = newStore_panel.getComponent(i).getBounds();
+                        preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+                        preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
+                    }
+                    Insets insets = newStore_panel.getInsets();
+                    preferredSize.width += insets.right;
+                    preferredSize.height += insets.bottom;
+                    newStore_panel.setMinimumSize(preferredSize);
+                    newStore_panel.setPreferredSize(preferredSize);
+                }
+            }
+            tabbedPane1.addTab("\u65b0\u589e\u5e97\u94fa", newStore_panel);
         }
         contentPane.add(tabbedPane1);
         tabbedPane1.setBounds(0, 0, 770, 520);

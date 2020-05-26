@@ -4,6 +4,8 @@ import FlowerStore.Entity.User;
 
 import java.util.List;
 
+//user表的接口
+
 public interface UserDAO {
 
     public String CheckPassword(String Name);

@@ -1,11 +1,11 @@
 package FlowerStore.Entity;
 
 public class Customer {
-    private int customer_id;
-    private String customer_name;
-    private String customer_sex;
-    private String customer_sign;
-    private String customer_phone;
+    private int customer_id; //顾客ID
+    private String customer_name;//顾客名字
+    private String customer_sex;//顾客性别
+    private String customer_sign;//个性签名
+    private String customer_phone;//电话
 
     public int getCustomer_id() {
         return customer_id;

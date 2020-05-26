@@ -81,6 +81,8 @@ public class ICustomerService implements CustomerService {
         List<Orders> ordersList = new ArrayList<>();
         if (list != null) {
             for (ShopList s : list) {
+                int StoreID=FactoryDAO.getIFlowers().CheckFlowersByID(s.getFlower_id()).getStore_id();
+                String FlowerName=FactoryDAO.getIFlowers().CheckFlowersByID(s.getFlower_id()).getFlower_name();
                 Orders orders=new Orders();
                 //计算总价
                 sum += s.getAllprice();
@@ -89,8 +91,11 @@ public class ICustomerService implements CustomerService {
                 orders.setFlower_id(s.getFlower_id());
                 orders.setQuantity(s.getBuynum());
                 orders.setDate(df.format(new Date()));
-                orders.setStore_id(FactoryDAO.getIStore().CheckStoreByID(s.getFlower_id()).getStore_id());
+                orders.setStore_id(StoreID);
                 ordersList.add(orders);
+
+                //对应删除花的数量
+                FactoryDAO.getIFlowers().OutFlowers(FlowerName,s.getBuynum(),StoreID);
                 //删除购物车里的全部物品
                 FactoryDAO.getIShopList().DeleteItem(s.getShoplist_id());
             }

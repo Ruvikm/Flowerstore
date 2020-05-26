@@ -2,6 +2,7 @@ package FlowerStore.Factory;
 
 import FlowerStore.Realize.DAO.*;
 
+//DAO工厂，分发各个与数据库中的表交互的接口
 public class FactoryDAO {
 
     private static FactoryDAO factoryDAO =new FactoryDAO();

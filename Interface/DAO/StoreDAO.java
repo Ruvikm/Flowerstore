@@ -4,6 +4,8 @@ import FlowerStore.Entity.Store;
 
 import java.util.List;
 
+//flowerstore表的接口
+
 public interface StoreDAO {
 
     public boolean AddStore(List<Store> list);

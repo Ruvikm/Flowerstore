@@ -18,12 +18,6 @@ public interface FlowerStoreService {
 
     public boolean Cultivate(List<Flower> list);//培育新品种鲜花
 
-    public void CheckNum();//查看库存
-
-    public void CheckOrders();//查看订单
-
-    public void CheckSales();//查看销售情况
-
     public boolean Login(String Name,String MyPassword);//登录
 
     public boolean In(int StoreID,String FlowerName,int Num);//入库
@@ -41,4 +35,6 @@ public interface FlowerStoreService {
     public boolean ChangePassWord(int CustomerID,String OldPassWord,String NewPassWord);//修改密码
 
     public  Object[][] CheckAllStoreOrders(String head[],int StoreID); //检索该商店的所有订单
+
+    public boolean AddStore(List<Store> storeList);  //添加商店
 }

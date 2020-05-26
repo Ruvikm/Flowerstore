@@ -2,10 +2,10 @@ package FlowerStore.Entity;
 
 public class Store {
 
-    private int store_id;
-    private String store_name;
-    private String store_location;
-    private String store_Bishours;
+    private int store_id;//商店ID
+    private String store_name;//商店名字
+    private String store_location;//商店位置
+    private String store_Bishours;//营业时间
 
     public int getStore_id() {
         return store_id;

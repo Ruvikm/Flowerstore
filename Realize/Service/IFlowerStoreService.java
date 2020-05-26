@@ -63,22 +63,13 @@ public class IFlowerStoreService implements FlowerStoreService {
 
     @Override
     public boolean Cultivate(List<Flower> list) {
-        return FactoryDAO.getIFlowers().AddFlower(list);
-    }
 
-    @Override
-    public void CheckNum() {
-
-    }
-
-    @Override
-    public void CheckOrders() {
-
-    }
-
-    @Override
-    public void CheckSales() {
-
+        String NewName=list.get(0).getFlower_name();
+        int StoreID=list.get(0).getStore_id();
+        //查看是否已有
+        if(FactoryDAO.getIFlowers().PowerfulCHeck(NewName,null,FactoryDAO.getIStore().CheckStoreByID(StoreID).getStore_name(),-1,-1,-1,-1).size()==0)
+            return FactoryDAO.getIFlowers().AddFlower(list);
+        return false;
     }
 
     @Override
@@ -172,5 +163,14 @@ public class IFlowerStoreService implements FlowerStoreService {
     @Override
     public Store CheckStoreByID(int StoreID) {
         return FactoryDAO.getIStore().CheckStoreByID(StoreID);
+    }
+
+    @Override
+    public boolean AddStore(List<Store> storeList) {
+        //先检测名字是不是重复
+        String NewName=storeList.get(0).getStore_name();
+        if(FactoryDAO.getIStore().CheckStoreByName(NewName)==null)
+            return FactoryDAO.getIStore().AddStore(storeList);
+        return false;
     }
 }

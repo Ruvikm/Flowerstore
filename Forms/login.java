@@ -36,6 +36,7 @@ public class login extends JFrame {
         initComponents();
     }
 
+    //登录
     private void Login_buttonActionPerformed(ActionEvent e) {
         // TODO add your code here
         name = username_test.getText();
@@ -65,6 +66,8 @@ public class login extends JFrame {
 
     }
 
+    //region 获取JRadioButtton中的选项
+
     private void manager_checkActionPerformed(ActionEvent e) {
         // TODO add your code here
         JRadioButton sourceButton=(JRadioButton)e.getSource();
@@ -78,6 +81,9 @@ public class login extends JFrame {
         select=sourceButton.getText();
     }
 
+    //endregion
+
+    //弹出注册页面
     private void registeredMouseClicked(MouseEvent e) {
         // TODO add your code here
         new regist().setVisible(true);

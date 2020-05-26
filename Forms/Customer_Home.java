@@ -128,6 +128,7 @@ public class Customer_Home extends JFrame {
         InitOrdersJPanel();//订单预加载
     }
 
+    //加载查询界面
     private void InitData(){
 
         //region 个人信息获取及自动填充
@@ -153,6 +154,12 @@ public class Customer_Home extends JFrame {
         FlowerList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);//
 
 
+        //清空数据重新加载
+
+        comboBox_name.removeAllItems();
+        comboBox_color.removeAllItems();
+        comboBox_shop.removeAllItems();
+
         //第一个为空值,默认不选以及可以实现多次选择
         comboBox_name.addItem(null);
         comboBox_color.addItem(null);
@@ -177,6 +184,7 @@ public class Customer_Home extends JFrame {
         //endregion
     }
 
+    //加载购物车
     private void InitShopList() {
         DefaultTableModel tableModelShop=new DefaultTableModel();//表格的数据源
         tableModelShop = new DefaultTableModel(FactoryService.getiCustomerService().CheckMyList(ListHead, CustomerID), ListHead) {
@@ -201,6 +209,7 @@ public class Customer_Home extends JFrame {
 
     }
 
+    //加载账单
     private void InitOrdersJPanel(){
         DefaultTableModel tableModelOrders=new DefaultTableModel();//表格的数据源
         tableModelOrders = new DefaultTableModel(FactoryService.getiCustomerService().CheckMyOrder(OrderList,CustomerID), OrderList) {
@@ -223,6 +232,7 @@ public class Customer_Home extends JFrame {
 
     }
 
+    //加载商品详情页
     private void initBuyJPanel(String clickName){
         Flower flower = FactoryService.getiCustomerService().CheckFlowersByName(clickName);
         //给label赋值
@@ -299,7 +309,7 @@ public class Customer_Home extends JFrame {
         int LowPrice = -1;
         int HighPrice = -1;
         if (!price1.getText().equals("")) {
-            if (isInteger(price1.getText())) {
+            if (isInteger(price1.getText())&&Integer.parseInt(price1.getText())>0) {
                 LowPriceFlag = true;
                 LowPrice = Integer.parseInt(price1.getText());
             } else {
@@ -309,7 +319,7 @@ public class Customer_Home extends JFrame {
         }
 
         if (!price2.getText().equals("")) {
-            if (isInteger(price2.getText())) {
+            if (isInteger(price2.getText())&&Integer.parseInt(price2.getText())>0) {
                 HighPriceFlag = true;
                 HighPrice = Integer.parseInt(price2.getText());
             } else {
@@ -318,7 +328,7 @@ public class Customer_Home extends JFrame {
             }
         }
         if (!num1.getText().equals("")) {
-            if (isInteger(num1.getText())) {
+            if (isInteger(num1.getText())&&Integer.parseInt(num1.getText())>0) {
                 LowNumFlag = true;
                 LowNum = Integer.parseInt(num1.getText());
             } else {
@@ -327,7 +337,7 @@ public class Customer_Home extends JFrame {
             }
         }
         if (!num2.getText().equals("")) {
-            if (isInteger(num2.getText())) {
+            if (isInteger(num2.getText())&&Integer.parseInt(num2.getText())>0) {
                 HighNumFlag = true;
                 HighNum = Integer.parseInt(num2.getText());
             } else {
@@ -406,26 +416,28 @@ public class Customer_Home extends JFrame {
         if (Buy_comboBox.getSelectedItem() != null) {
             flower = FactoryService.getiCustomerService().CheckFlowersByName((String) Buy_comboBox.getSelectedItem());
         } //获取被选中的项
-        if (!buy_numtext.getText().equals("")) {
-            if (isInteger(buy_numtext.getText()) && Integer.parseInt(buy_numtext.getText()) > 0) {
-                BuyNum = Integer.parseInt(buy_numtext.getText());
-                List<ShopList> list = new ArrayList<>();
-                ShopList item = new ShopList();
-                item.setCustomer_id(CustomerID);
-                item.setFlower_id(flower.getFlower_id());
-                item.setBuynum(BuyNum);
-                item.setAllprice(BuyNum * flower.getFlower_price());
-                list.add(item);
-                //System.out.println(BuyNum + flower.getFlower_name());
-                if (FactoryService.getiCustomerService().AddToList(list)) {
-                    JOptionPane.showMessageDialog(null, "成功添加到购物车！");
-                    InitShopList();
-                } else
-                    JOptionPane.showMessageDialog(null, "添加到购物车失败！");
+        if (!buy_numtext.getText().equals("")) {//添加到购物车的数量要小于库存
+            if (isInteger(buy_numtext.getText())) {
+                if (Integer.parseInt(buy_numtext.getText()) < Integer.parseInt(Numlabel.getText())) {
+                    BuyNum = Integer.parseInt(buy_numtext.getText());
+                    List<ShopList> list = new ArrayList<>();
+                    ShopList item = new ShopList();
+                    item.setCustomer_id(CustomerID);
+                    item.setFlower_id(flower.getFlower_id());
+                    item.setBuynum(BuyNum);
+                    item.setAllprice(BuyNum * flower.getFlower_price());
+                    list.add(item);
+                    //System.out.println(BuyNum + flower.getFlower_name());
+                    if (FactoryService.getiCustomerService().AddToList(list)) {
+                        JOptionPane.showMessageDialog(null, "成功添加到购物车！");
+                        InitShopList();
+                    }
+                }
+                else
+                    JOptionPane.showMessageDialog(null, "添加到购物车的数量应小于库存！");
             } else
                 JOptionPane.showMessageDialog(null, "应为大于0的整数！");
-        }
-        else
+        } else
             JOptionPane.showMessageDialog(null, "请输入购买数量！");
 
     }
@@ -441,22 +453,26 @@ public class Customer_Home extends JFrame {
 
 
         if (!buy_numtext.getText().equals("")) {
-            if (isInteger(buy_numtext.getText()) && Integer.parseInt(buy_numtext.getText()) > 0) {
-                int Sum = Integer.parseInt(buy_numtext.getText()) * flower.getFlower_price();
-                JOptionPane.showMessageDialog(null, "请支付" + Sum + "元！");
-                //添加到账单
-                List<Orders> list=new ArrayList<>();
-                Orders orders=new Orders();
-                orders.setCustomer_id(CustomerID);
-                orders.setFlower_id(flower.getFlower_id());
-                orders.setQuantity(Integer.parseInt(buy_numtext.getText()) );
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-                orders.setDate(df.format(new Date()));
-                orders.setStore_id(FactoryDAO.getIStore().CheckStoreByID(flower.getFlower_id()).getStore_id());
-                list.add(orders);
-                FactoryService.getiCustomerService().AddToOrders(list);
-                //刷新账单
-                InitOrdersJPanel();
+            if (isInteger(buy_numtext.getText())) {
+                if (Integer.parseInt(buy_numtext.getText()) < Integer.parseInt(Numlabel.getText())) {
+                    int Sum = Integer.parseInt(buy_numtext.getText()) * flower.getFlower_price();
+                    JOptionPane.showMessageDialog(null, "请支付" + Sum + "元！");
+                    //添加到账单
+                    List<Orders> list = new ArrayList<>();
+                    Orders orders = new Orders();
+                    orders.setCustomer_id(CustomerID);
+                    orders.setFlower_id(flower.getFlower_id());
+                    orders.setQuantity(Integer.parseInt(buy_numtext.getText()));
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                    orders.setDate(df.format(new Date()));
+                    orders.setStore_id(FactoryDAO.getIStore().CheckStoreByID(flower.getFlower_id()).getStore_id());
+                    list.add(orders);
+                    FactoryService.getiCustomerService().AddToOrders(list);
+                    //刷新账单
+                    InitOrdersJPanel();
+                }
+                else
+                    JOptionPane.showMessageDialog(null, "购买数量应小于库存！");
             } else
                 JOptionPane.showMessageDialog(null, "应为大于0的整数！");
         } else
@@ -499,6 +515,7 @@ public class Customer_Home extends JFrame {
         int AllPrice = FactoryService.getiCustomerService().CheckOut(CustomerID);
         if (AllPrice != 0) {
             JOptionPane.showMessageDialog(null, "请支付" + AllPrice + "元！");
+            InitData();
             InitShopList();
             InitOrdersJPanel();
         } else
