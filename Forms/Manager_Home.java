@@ -36,8 +36,8 @@ public class Manager_Home extends JFrame {
     private JLabel OnsSellTip;
     private JLabel label12;
     private JLabel label13;
-    private JSpinner InNum;
-    private JSpinner OutNum;
+    private JSpinner JSpinnerIn;
+    private JSpinner JSpinnerOut;
     private JComboBox comboBoxIn;
     private JComboBox comboBoxOut;
     private JLabel label14;
@@ -51,6 +51,15 @@ public class Manager_Home extends JFrame {
     private JLabel label19;
     private JTextField textFieldNum2;
     private JButton Choose;
+    private JButton buttonIn;
+    private JButton buttonOut;
+    private JTextField textFieldName;
+    private JTextField textFieldPrice;
+    private JTextField textFieldColor;
+    private JLabel label10;
+    private JLabel label11;
+    private JLabel label20;
+    private JButton Newbutton;
     private JPanel history_panel;
     private JScrollPane scrollPane1;
     private JTable historylist;
@@ -73,6 +82,7 @@ public class Manager_Home extends JFrame {
     private JPasswordField NewpasswordField;
     private JButton SavePassWord;
     private JLabel label6;
+    private JLabel label21;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     public Manager_Home(){
@@ -267,6 +277,103 @@ public class Manager_Home extends JFrame {
 
     }
 
+    private void buttonInActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        boolean NameFlag = false;
+        boolean NumFlag = false;
+        int InNum = 0;
+        String Name = null;
+        if (comboBoxIn.getSelectedItem() != null) {
+            Name = (String) comboBoxIn.getSelectedItem();
+            NameFlag = true;
+        }
+        if ((int) JSpinnerIn.getValue() != 0) {
+            InNum = (int) JSpinnerIn.getValue();
+            NumFlag = true;
+        }
+
+        if (NumFlag && NameFlag) {
+            if (FactoryService.getFlowerStoreService().In(StoreID, Name, InNum)) {
+                JOptionPane.showMessageDialog(null, "进货成功！");
+                initOnSellList();
+                JSpinnerIn.setValue(0);
+            }
+        } else
+            JOptionPane.showMessageDialog(null, "进货信息错误！");
+
+
+    }
+
+    private void buttonOutActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        // TODO add your code here
+        boolean NameFlag = false;
+        boolean NumFlag = false;
+        int OutNum = 0;
+        String Name = null;
+        if (comboBoxOut.getSelectedItem() != null) {
+            Name = (String) comboBoxOut.getSelectedItem();
+            NameFlag = true;
+        }
+        if ((int) JSpinnerOut.getValue() != 0) {
+            OutNum = (int) JSpinnerOut.getValue();
+            NumFlag = true;
+        }
+
+        if (NumFlag && NameFlag) {
+            if (FactoryService.getFlowerStoreService().Out(StoreID, Name, OutNum)) {
+                JOptionPane.showMessageDialog(null, "出货成功！");
+                initOnSellList();
+                JSpinnerOut.setValue(0);
+            }
+            else
+                JOptionPane.showMessageDialog(null, "出仓失败！");
+        } else
+            JOptionPane.showMessageDialog(null, "出仓信息错误！");
+    }
+
+    private void NewbuttonActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        boolean NameFlag = false;
+        boolean ColorFlag = false;
+        boolean PriceFlag = false;
+
+        String NewName = null;
+        String NewColor = null;
+        int NewPrice = 0;
+        if (!textFieldName.getText().equals("")) {
+            NewName = textFieldName.getText();
+            NameFlag = true;
+        }
+        if (!textFieldColor.getText().equals("")) {
+            NewColor = textFieldColor.getText();
+            ColorFlag = true;
+        }
+        if (!textFieldPrice.getText().equals("")) {
+            NewPrice = Integer.parseInt(textFieldPrice.getText());
+            PriceFlag = true;
+        }
+        List<Flower> flowerList=new ArrayList<>();
+        Flower flower=new Flower();
+
+        if (NameFlag && ColorFlag && PriceFlag) {
+            flower.setFlower_name(NewName);
+            flower.setFlower_color(NewColor);
+            flower.setFlower_price(NewPrice);
+            flower.setStore_id(StoreID);
+            flower.setFlower_num(0);
+             flowerList.add(flower);
+            if(FactoryService.getFlowerStoreService().Cultivate(flowerList)) {
+                JOptionPane.showMessageDialog(null, "添加成功！");
+                initOnSellList();
+            }
+            else
+                JOptionPane.showMessageDialog(null, "添加失败！");
+        }
+        else
+            JOptionPane.showMessageDialog(null, "信息错误！");
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         tabbedPane1 = new JTabbedPane();
@@ -276,8 +383,8 @@ public class Manager_Home extends JFrame {
         OnsSellTip = new JLabel();
         label12 = new JLabel();
         label13 = new JLabel();
-        InNum = new JSpinner();
-        OutNum = new JSpinner();
+        JSpinnerIn = new JSpinner();
+        JSpinnerOut = new JSpinner();
         comboBoxIn = new JComboBox();
         comboBoxOut = new JComboBox();
         label14 = new JLabel();
@@ -291,6 +398,15 @@ public class Manager_Home extends JFrame {
         label19 = new JLabel();
         textFieldNum2 = new JTextField();
         Choose = new JButton();
+        buttonIn = new JButton();
+        buttonOut = new JButton();
+        textFieldName = new JTextField();
+        textFieldPrice = new JTextField();
+        textFieldColor = new JTextField();
+        label10 = new JLabel();
+        label11 = new JLabel();
+        label20 = new JLabel();
+        Newbutton = new JButton();
         history_panel = new JPanel();
         scrollPane1 = new JScrollPane();
         historylist = new JTable();
@@ -313,6 +429,7 @@ public class Manager_Home extends JFrame {
         NewpasswordField = new JPasswordField();
         SavePassWord = new JButton();
         label6 = new JLabel();
+        label21 = new JLabel();
 
         //======== this ========
         addWindowListener(new WindowAdapter() {
@@ -346,7 +463,7 @@ public class Manager_Home extends JFrame {
                     scrollPane2.setViewportView(OnSelll_List);
                 }
                 manange_panel.add(scrollPane2);
-                scrollPane2.setBounds(0, 0, 685, 210);
+                scrollPane2.setBounds(0, 0, 685, 200);
 
                 //---- OnsSellTip ----
                 OnsSellTip.setText("\u5b81\u8fd8\u6ca1\u8fdb\u8d27\u5417\uff1f");
@@ -358,91 +475,129 @@ public class Manager_Home extends JFrame {
                 label12.setText("\u8fdb\u8d27");
                 label12.setFont(label12.getFont().deriveFont(label12.getFont().getSize() + 2f));
                 manange_panel.add(label12);
-                label12.setBounds(55, 235, 28, 18);
+                label12.setBounds(45, 225, 28, 18);
 
                 //---- label13 ----
                 label13.setText("\u51fa\u4ed3");
                 label13.setFont(label13.getFont().deriveFont(label13.getFont().getSize() + 2f));
                 manange_panel.add(label13);
-                label13.setBounds(new Rectangle(new Point(55, 315), label13.getPreferredSize()));
+                label13.setBounds(new Rectangle(new Point(45, 305), label13.getPreferredSize()));
 
-                //---- InNum ----
-                InNum.setModel(new SpinnerNumberModel(1, 1, 9999, 5));
-                manange_panel.add(InNum);
-                InNum.setBounds(105, 265, 90, InNum.getPreferredSize().height);
+                //---- JSpinnerIn ----
+                JSpinnerIn.setModel(new SpinnerNumberModel(0, 0, 99999, 5));
+                manange_panel.add(JSpinnerIn);
+                JSpinnerIn.setBounds(95, 255, 70, JSpinnerIn.getPreferredSize().height);
 
-                //---- OutNum ----
-                OutNum.setModel(new SpinnerNumberModel(1, 1, 99999, 5));
-                manange_panel.add(OutNum);
-                OutNum.setBounds(105, 345, 90, OutNum.getPreferredSize().height);
+                //---- JSpinnerOut ----
+                JSpinnerOut.setModel(new SpinnerNumberModel(0, 0, 99999, 5));
+                manange_panel.add(JSpinnerOut);
+                JSpinnerOut.setBounds(95, 335, 70, JSpinnerOut.getPreferredSize().height);
 
                 //---- comboBoxIn ----
                 comboBoxIn.setSelectedIndex(-1);
                 manange_panel.add(comboBoxIn);
-                comboBoxIn.setBounds(210, 265, 80, comboBoxIn.getPreferredSize().height);
+                comboBoxIn.setBounds(180, 255, 75, comboBoxIn.getPreferredSize().height);
 
                 //---- comboBoxOut ----
                 comboBoxOut.setSelectedIndex(-1);
                 manange_panel.add(comboBoxOut);
-                comboBoxOut.setBounds(210, 345, 80, comboBoxOut.getPreferredSize().height);
+                comboBoxOut.setBounds(180, 335, 75, comboBoxOut.getPreferredSize().height);
 
                 //---- label14 ----
                 label14.setText("\u65b0\u589e\u54c1\u79cd");
                 label14.setFont(label14.getFont().deriveFont(label14.getFont().getSize() + 2f));
-                label14.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 manange_panel.add(label14);
-                label14.setBounds(new Rectangle(new Point(55, 395), label14.getPreferredSize()));
+                label14.setBounds(new Rectangle(new Point(45, 385), label14.getPreferredSize()));
 
                 //---- label15 ----
                 label15.setText("\u7b5b\u9009");
                 label15.setFont(label15.getFont().deriveFont(label15.getFont().getSize() + 2f));
                 manange_panel.add(label15);
-                label15.setBounds(new Rectangle(new Point(390, 235), label15.getPreferredSize()));
+                label15.setBounds(new Rectangle(new Point(410, 225), label15.getPreferredSize()));
 
                 //---- label16 ----
                 label16.setText("\u82b1\u540d");
                 label16.setFont(label16.getFont().deriveFont(label16.getFont().getSize() + 1f));
                 label16.setLabelFor(comboBoxName);
                 manange_panel.add(label16);
-                label16.setBounds(new Rectangle(new Point(430, 270), label16.getPreferredSize()));
+                label16.setBounds(new Rectangle(new Point(450, 260), label16.getPreferredSize()));
 
                 //---- comboBoxName ----
                 comboBoxName.setSelectedIndex(-1);
                 manange_panel.add(comboBoxName);
-                comboBoxName.setBounds(475, 265, 80, comboBoxName.getPreferredSize().height);
+                comboBoxName.setBounds(495, 255, 75, comboBoxName.getPreferredSize().height);
 
                 //---- label17 ----
                 label17.setText("\u989c\u8272");
                 label17.setFont(label17.getFont().deriveFont(label17.getFont().getSize() + 1f));
                 label17.setLabelFor(comboBoxColor);
                 manange_panel.add(label17);
-                label17.setBounds(new Rectangle(new Point(430, 320), label17.getPreferredSize()));
+                label17.setBounds(new Rectangle(new Point(450, 310), label17.getPreferredSize()));
 
                 //---- comboBoxColor ----
                 comboBoxColor.setSelectedIndex(-1);
                 manange_panel.add(comboBoxColor);
-                comboBoxColor.setBounds(475, 315, 80, comboBoxColor.getPreferredSize().height);
+                comboBoxColor.setBounds(495, 305, 75, comboBoxColor.getPreferredSize().height);
 
                 //---- label18 ----
                 label18.setText("\u5e93\u5b58");
                 label18.setFont(label18.getFont().deriveFont(label18.getFont().getSize() + 1f));
                 manange_panel.add(label18);
-                label18.setBounds(new Rectangle(new Point(430, 370), label18.getPreferredSize()));
+                label18.setBounds(new Rectangle(new Point(450, 360), label18.getPreferredSize()));
                 manange_panel.add(textFieldNum1);
-                textFieldNum1.setBounds(480, 365, 49, 30);
+                textFieldNum1.setBounds(500, 355, 49, 30);
 
                 //---- label19 ----
                 label19.setText("\u2014\u2014");
                 manange_panel.add(label19);
-                label19.setBounds(new Rectangle(new Point(540, 370), label19.getPreferredSize()));
+                label19.setBounds(new Rectangle(new Point(560, 360), label19.getPreferredSize()));
                 manange_panel.add(textFieldNum2);
-                textFieldNum2.setBounds(570, 365, 49, 30);
+                textFieldNum2.setBounds(590, 355, 49, 30);
 
                 //---- Choose ----
                 Choose.setText("\u7b5b\u9009");
                 Choose.addActionListener(e -> ChooseActionPerformed(e));
                 manange_panel.add(Choose);
-                Choose.setBounds(549, 455, 90, Choose.getPreferredSize().height);
+                Choose.setBounds(565, 455, 90, Choose.getPreferredSize().height);
+
+                //---- buttonIn ----
+                buttonIn.setText("\u8fdb\u8d27");
+                buttonIn.addActionListener(e -> buttonInActionPerformed(e));
+                manange_panel.add(buttonIn);
+                buttonIn.setBounds(265, 255, 65, 30);
+
+                //---- buttonOut ----
+                buttonOut.setText("\u51fa\u4ed3");
+                buttonOut.addActionListener(e -> buttonOutActionPerformed(e));
+                manange_panel.add(buttonOut);
+                buttonOut.setBounds(265, 335, 65, 30);
+                manange_panel.add(textFieldName);
+                textFieldName.setBounds(95, 440, 50, 30);
+                manange_panel.add(textFieldPrice);
+                textFieldPrice.setBounds(176, 440, 50, 30);
+                manange_panel.add(textFieldColor);
+                textFieldColor.setBounds(257, 440, 50, 30);
+
+                //---- label10 ----
+                label10.setText("\u540d\u5b57");
+                manange_panel.add(label10);
+                label10.setBounds(new Rectangle(new Point(95, 415), label10.getPreferredSize()));
+
+                //---- label11 ----
+                label11.setText("\u4ef7\u683c");
+                manange_panel.add(label11);
+                label11.setBounds(new Rectangle(new Point(176, 415), label11.getPreferredSize()));
+
+                //---- label20 ----
+                label20.setText("\u989c\u8272");
+                manange_panel.add(label20);
+                label20.setBounds(new Rectangle(new Point(257, 415), label20.getPreferredSize()));
+
+                //---- Newbutton ----
+                Newbutton.setText("\u65b0\u589e");
+                Newbutton.addActionListener(e -> NewbuttonActionPerformed(e));
+                manange_panel.add(Newbutton);
+                Newbutton.setBounds(338, 440, 65, 30);
 
                 {
                     // compute preferred size
@@ -593,6 +748,11 @@ public class Manager_Home extends JFrame {
                 label6.setText("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014");
                 information_panel.add(label6);
                 label6.setBounds(85, 275, 550, label6.getPreferredSize().height);
+
+                //---- label21 ----
+                label21.setText("eg\uff1a7:00---19:00");
+                information_panel.add(label21);
+                label21.setBounds(new Rectangle(new Point(160, 225), label21.getPreferredSize()));
 
                 {
                     // compute preferred size

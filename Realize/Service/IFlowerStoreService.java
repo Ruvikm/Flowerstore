@@ -10,6 +10,7 @@ import FlowerStore.Interface.Service.FlowerStoreService;
 import FlowerStore.Realize.DAO.IUser;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class IFlowerStoreService implements FlowerStoreService {
@@ -61,8 +62,8 @@ public class IFlowerStoreService implements FlowerStoreService {
     }
 
     @Override
-    public void Cultivate() {
-
+    public boolean Cultivate(List<Flower> list) {
+        return FactoryDAO.getIFlowers().AddFlower(list);
     }
 
     @Override
@@ -93,13 +94,18 @@ public class IFlowerStoreService implements FlowerStoreService {
     }
 
     @Override
-    public void In() {
-
+    public boolean In(int StoreID,String FlowerName,int Num) {
+       return FactoryDAO.getIFlowers().InFlowers(FlowerName,Num,StoreID);
     }
 
     @Override
-    public void Out() {
-
+    public boolean Out(int StoreID,String FlowerName,int Num) {
+        List<Flower> flowerList = new ArrayList<>();
+        flowerList = FactoryDAO.getIFlowers().PowerfulCHeck(FlowerName, null, FactoryDAO.getIStore().CheckStoreByID(StoreID).getStore_name(), -1, -1, -1, -1);
+        int NowNum = flowerList.get(0).getFlower_num();
+        if (NowNum >= Num)
+            return FactoryDAO.getIFlowers().OutFlowers(FlowerName, Num, StoreID);
+        return false;
     }
 
     @Override
