@@ -101,61 +101,7 @@ public class Manager_Home extends JFrame {
         initComponents();
     }
 
-    private static void OnloadPicture(JButton developer) {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setMultiSelectionEnabled(true);
-        /** 过滤文件类型 * */
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("png","png");
-        chooser.setFileFilter(filter);
-        int returnVal = chooser.showOpenDialog(developer);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            /** 得到选择的文件* */
-            File[] arrfiles = chooser.getSelectedFiles();
-            if (arrfiles == null || arrfiles.length == 0) {
-                return;
-            }
-            FileInputStream input = null;
-            FileOutputStream out = null;
-            String path = "E:\\college\\code\\Java\\src\\FlowerStore\\img\\flowers";
-            try {
-                for (File f : arrfiles) {
-                    File dir = new File(path);
-                    /** 目标文件夹 * */
-                    File[] fs = dir.listFiles();
-                    HashSet<String> set = new HashSet<String>();
-                    for (File file : fs) {
-                        set.add(file.getName());
-                    }
-                    /** 判断是否已有该文件* */
-                    if (set.contains(f.getName())) {
-                        JOptionPane.showMessageDialog(new JDialog(), f.getName() + ":该文件已存在！");
-                        return;
-                    }
-                    input = new FileInputStream(f);
-                    byte[] buffer = new byte[1024];
-                    File des = new File(path, f.getName());
-                    out = new FileOutputStream(des);
-                    int len = 0;
-                    while (-1 != (len = input.read(buffer))) {
-                        out.write(buffer, 0, len);
-                    }
-                    out.close();
-                    input.close();
-                }
-                JOptionPane.showMessageDialog(null, "上传图片成功！", "提示",
-                        JOptionPane.INFORMATION_MESSAGE);
 
-            } catch (FileNotFoundException e1) {
-                JOptionPane.showMessageDialog(null, "上传图片失败！", "提示",
-                        JOptionPane.ERROR_MESSAGE);
-                e1.printStackTrace();
-            } catch (IOException e1) {
-                JOptionPane.showMessageDialog(null, "上传图片失败！", "提示",
-                        JOptionPane.ERROR_MESSAGE);
-                e1.printStackTrace();
-            }
-        }
-    }
 
     //region初始化数据
 
@@ -422,62 +368,69 @@ public class Manager_Home extends JFrame {
             JOptionPane.showMessageDialog(null, "出仓信息错误！");
     }
 
+    //添加新品种
+
+    private static void OnloadPicture(JButton developer,String FileName) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setMultiSelectionEnabled(true);
+        /** 过滤文件类型 * */
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("png","png");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(developer);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            /** 得到选择的文件* */
+            File[] arrfiles = chooser.getSelectedFiles();
+            if (arrfiles == null || arrfiles.length == 0) {
+                return;
+            }
+            FileInputStream input = null;
+            FileOutputStream out = null;
+            String path = ".\\src\\FlowerStore\\img\\flowers";//相对路径
+            try {
+                for (File f : arrfiles) {
+                    File dir = new File(path);
+                    /** 目标文件夹 * */
+                    File[] fs = dir.listFiles();
+                    HashSet<String> set = new HashSet<String>();
+                    for (File file : fs) {
+                        set.add(file.getName());
+                    }
+                    /** 判断是否已有该文件* */
+                    if (set.contains(f.getName())) {
+                        JOptionPane.showMessageDialog(new JDialog(), f.getName() + ":该文件已存在！");
+                        return;
+                    }
+                    input = new FileInputStream(f);
+                    byte[] buffer = new byte[1024];
+                    File des = new File(path, FileName+".png");
+                    out = new FileOutputStream(des);
+                    int len = 0;
+                    while (-1 != (len = input.read(buffer))) {
+                        out.write(buffer, 0, len);
+                    }
+                    out.close();
+                    input.close();
+                }
+                JOptionPane.showMessageDialog(null, "上传图片成功！", "提示",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (FileNotFoundException e1) {
+                JOptionPane.showMessageDialog(null, "上传图片失败！", "提示",
+                        JOptionPane.ERROR_MESSAGE);
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                JOptionPane.showMessageDialog(null, "上传图片失败！", "提示",
+                        JOptionPane.ERROR_MESSAGE);
+                e1.printStackTrace();
+            }
+        }
+    }
+
 
     //endregion
 
 
     //region 新增商店界面
-
-    //添加新品种
-    private void NewbuttonActionPerformed(ActionEvent e) {
-        // TODO add your code here
-
-        boolean NameFlag = false;
-        boolean ColorFlag = false;
-        boolean PriceFlag = false;
-
-        String NewName = null;
-        String NewColor = null;
-        int NewPrice = 0;
-        if (!textFieldName.getText().equals("")) {
-            NewName = textFieldName.getText();
-            NameFlag = true;
-        }
-        if (!textFieldColor.getText().equals("")) {
-            NewColor = textFieldColor.getText();
-            ColorFlag = true;
-        }
-        if (!textFieldPrice.getText().equals("")) {
-            if (isInteger(textFieldPrice.getText()) && Integer.parseInt(textFieldPrice.getText()) > 0) {
-                NewPrice = Integer.parseInt(textFieldPrice.getText());
-                PriceFlag = true;
-            } else
-                JOptionPane.showMessageDialog(null, "价格应为大于0的整数！");
-        }
-        List<Flower> flowerList = new ArrayList<>();
-        Flower flower = new Flower();
-
-        if (NameFlag && ColorFlag && PriceFlag) {
-            flower.setFlower_name(NewName);
-            flower.setFlower_color(NewColor);
-            flower.setFlower_price(NewPrice);
-            flower.setStore_id(StoreID);
-            flower.setFlower_num(0);
-            flowerList.add(flower);
-            if (FactoryService.getFlowerStoreService().Cultivate(flowerList)) {
-                JOptionPane.showMessageDialog(null, "上传的图片名字请确保和花的名字一致且为png格式！");
-                OnloadPicture(Newbutton);
-                JOptionPane.showMessageDialog(null, "添加成功！");
-                initOnSellList();
-            } else
-                JOptionPane.showMessageDialog(null, "该商店已有该品种！");
-        } else
-            JOptionPane.showMessageDialog(null, "信息错误！");
-    }
-
-    //endregion
-
-    //region 上传图片文件
 
     private void SaveNewStoreActionPerformed(ActionEvent e) {
         // TODO add your code here
@@ -523,10 +476,60 @@ public class Manager_Home extends JFrame {
 
     }
 
+    //endregion
 
+
+    //region 上传图片文件
+
+    private void NewbuttonActionPerformed(ActionEvent e) {
+        // TODO add your code here
+
+        boolean NameFlag = false;
+        boolean ColorFlag = false;
+        boolean PriceFlag = false;
+
+        String NewName = null;
+        String NewColor = null;
+        int NewPrice = 0;
+        if (!textFieldName.getText().equals("")) {
+            NewName = textFieldName.getText();
+            NameFlag = true;
+        }
+        if (!textFieldColor.getText().equals("")) {
+            NewColor = textFieldColor.getText();
+            ColorFlag = true;
+        }
+        if (!textFieldPrice.getText().equals("")) {
+            if (isInteger(textFieldPrice.getText()) && Integer.parseInt(textFieldPrice.getText()) > 0) {
+                NewPrice = Integer.parseInt(textFieldPrice.getText());
+                PriceFlag = true;
+            } else
+                JOptionPane.showMessageDialog(null, "价格应为大于0的整数！");
+        }
+        List<Flower> flowerList = new ArrayList<>();
+        Flower flower = new Flower();
+
+        if (NameFlag && ColorFlag && PriceFlag) {
+            flower.setFlower_name(NewName);
+            flower.setFlower_color(NewColor);
+            flower.setFlower_price(NewPrice);
+            flower.setStore_id(StoreID);
+            flower.setFlower_num(0);
+            flowerList.add(flower);
+            if (FactoryService.getFlowerStoreService().Cultivate(flowerList)) {
+                JOptionPane.showMessageDialog(null, "上传的图片名字请确保和花的名字一致且为png格式！");
+                OnloadPicture(Newbutton,NewName);
+                JOptionPane.showMessageDialog(null, "添加成功！");
+                initOnSellList();
+            } else
+                JOptionPane.showMessageDialog(null, "该商店已有该品种！");
+        } else
+            JOptionPane.showMessageDialog(null, "信息错误！");
+    }
 
 
     //endregion
+
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents

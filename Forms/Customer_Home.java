@@ -245,7 +245,8 @@ public class Customer_Home extends JFrame {
         ImageIcon image = null;
         try {
             //图片自适应大小填充
-            image = new ImageIcon(ImageIO.read(new File("E:\\college\\code\\Java\\src\\FlowerStore\\img\\flowers\\"+flower.getFlower_name()+".png")));
+            //采用相对路径
+            image = new ImageIcon(ImageIO.read(new File(".\\src\\FlowerStore\\img\\flowers\\"+flower.getFlower_name()+".png")));
             image.setImage(image.getImage().getScaledInstance(280, 280,Image.SCALE_DEFAULT ));
             picturelabel .setIcon(image);
         } catch (IOException ioException) {
@@ -465,11 +466,16 @@ public class Customer_Home extends JFrame {
                     orders.setQuantity(Integer.parseInt(buy_numtext.getText()));
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
                     orders.setDate(df.format(new Date()));
-                    orders.setStore_id(FactoryDAO.getIStore().CheckStoreByID(flower.getFlower_id()).getStore_id());
+                    orders.setStore_id(FactoryDAO.getIFlowers().CheckFlowersByID(flower.getFlower_id()).getStore_id());
                     list.add(orders);
                     FactoryService.getiCustomerService().AddToOrders(list);
+
+                    //出仓鲜花
+
+                    FactoryService.getFlowerStoreService().Out(FactoryDAO.getIFlowers().CheckFlowersByID(flower.getFlower_id()).getStore_id(),flower.getFlower_name(),Integer.parseInt(buy_numtext.getText()));
                     //刷新账单
                     InitOrdersJPanel();
+                    initBuyJPanel(flower.getFlower_name());
                 }
                 else
                     JOptionPane.showMessageDialog(null, "购买数量应小于库存！");
