@@ -517,7 +517,7 @@ public class Manager_Home extends JFrame {
             flower.setFlower_num(0);
             flowerList.add(flower);
             if (FactoryService.getFlowerStoreService().Cultivate(flowerList)) {
-                JOptionPane.showMessageDialog(null, "上传的图片名字请确保和花的名字一致且为png格式！");
+                JOptionPane.showMessageDialog(null, "请确保图片为png格式！");
                 OnloadPicture(Newbutton,NewName);
                 JOptionPane.showMessageDialog(null, "添加成功！");
                 initOnSellList();
