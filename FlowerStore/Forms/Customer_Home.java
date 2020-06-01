@@ -365,6 +365,7 @@ public class Customer_Home extends JFrame {
             };
             if (FactoryService.getiCustomerService().FilterFlowers(flowerName, color, ShopName, LowNum, HighNum, LowPrice, HighPrice, head).length != 0) {
                 FlowerList.setModel(tableModel);//填充Jtable
+                FlowerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 Check.revalidate();
                 scrollPane1.validate();
             }
@@ -418,8 +419,8 @@ public class Customer_Home extends JFrame {
             flower = FactoryService.getiCustomerService().CheckFlowersByName((String) Buy_comboBox.getSelectedItem());
         } //获取被选中的项
         if (!buy_numtext.getText().equals("")) {//添加到购物车的数量要小于库存
-            if (isInteger(buy_numtext.getText())) {
-                if (Integer.parseInt(buy_numtext.getText()) < Integer.parseInt(Numlabel.getText())) {
+            if (isInteger(buy_numtext.getText())&&Integer.parseInt(buy_numtext.getText())>0) {
+                if (Integer.parseInt(buy_numtext.getText()) <= Integer.parseInt(Numlabel.getText())) {
                     BuyNum = Integer.parseInt(buy_numtext.getText());
                     List<ShopList> list = new ArrayList<>();
                     ShopList item = new ShopList();
@@ -454,8 +455,8 @@ public class Customer_Home extends JFrame {
 
 
         if (!buy_numtext.getText().equals("")) {
-            if (isInteger(buy_numtext.getText())) {
-                if (Integer.parseInt(buy_numtext.getText()) < Integer.parseInt(Numlabel.getText())) {
+            if (isInteger(buy_numtext.getText())&&Integer.parseInt(buy_numtext.getText())>0) {
+                if (Integer.parseInt(buy_numtext.getText()) <= Integer.parseInt(Numlabel.getText())) {
                     int Sum = Integer.parseInt(buy_numtext.getText()) * flower.getFlower_price();
                     JOptionPane.showMessageDialog(null, "请支付" + Sum + "元！");
                     //添加到账单
