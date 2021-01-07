@@ -21,7 +21,7 @@ public class DBUtil {
 	
 	
 	public static Connection getConnection(){
-		String url = "jdbc:mysql://localhost:3306/flower";
+		String url = "jdbc:mysql://localhost:3306/flower?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false";
 		String name = "root";
 		String password = "123321";
 		Connection conn = null;
